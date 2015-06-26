@@ -1,0 +1,56 @@
+;DEFINING THEME METADATA (.INFO FILES)
+; Required properties
+;machine-readable name of the theme
+name = Custom Theme
+core = 7.x
+
+
+
+;ADDITIONAL PROPERTIES
+description = Custom Theme
+;Creating a subtheme allows you to inherit the functionality and assets of the base theme 
+;base theme = subzen
+
+
+
+; Setting features are a way of overriding Drupal’s default global theme settings 9 default global features
+features[] = logo
+features[] = name
+features[] = slogan
+features[] = favicon
+features[] = main_menu
+features[] = secondary_menu
+features[] = comment_user_picture
+features[] = comment_user_verification
+
+settings[customtheme_val] = blue bikeshed
+
+screenshot = teddybig.jpg
+
+;Regions  Regions are sections of your page layout where content (blocks) are placed
+regions[page_top] = Page Top
+regions[header] = Header
+regions[highlighted] = Highlighted
+regions[help] = Help
+regions[content] = Content 
+regions[sidebar_first] = Sidebar First
+regions[sidebar_second] = Sidebar Second
+regions[left_sidebar_first] = Left Sidebar First
+regions[right_sidebar_second] = Right Sidebar Second
+regions[footer] = Footer
+regions[page_bottom] = Page Bottom
+
+;hidden regions
+regions_hidden[secondary_footer] = Secondary Footer
+
+;custom regions
+regions[banner] = Banner
+regions[navigation] = Navigation
+ 
+;Stylesheets
+stylesheets[screen][] = css/screen.css
+
+;scripts
+scripts[] = js/custom_scripts.js
+
+;stylesheets[all][] = css/style.css stylesheets[print][] = css/print.css

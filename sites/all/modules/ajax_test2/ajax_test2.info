@@ -1,0 +1,5 @@
+name = Ajax Test 2
+description = Ajax Test 2
+core = 7.x
+package = jstest
+scripts[] = js/ajaxtest2.js

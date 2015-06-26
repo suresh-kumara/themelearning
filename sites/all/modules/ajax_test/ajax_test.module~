@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file ajax_test
+ *
+ *
+ */ 
+function ajax_test_init() {
+drupal_add_js(drupal_get_path('module', 'ajax_test') . '/js/ajax_test.js'); 
+}
+function ajax_test_menu() {
+/**
+ * Any information returned will be wrapped with the default page template. This is usually not desired for an ajax function.
+ */
+$items['ajax/forms'] = array(
+ 'title' => 'ajax forms',
+ 'page callback' => 'drupal_get_form',
+ 'page arguments' => array('ajax_test_form'),
+ 'access arguments' => array('access content'),
+ 'type' => MENU_NORMAL_ITEM,
+);
+$items['ajax/username'] = array(
+ 'title' => 'Current user login',
+ 'page callback' => 'user_loggedin_name',
+ 'access arguments' => array('access content'),
+ 'type' => MENU_NORMAL_ITEM,
+);
+
+return $items;
+}
+function ajax_test_form($form, &$form_state) {
+/**
+ *
+ * The function drupal_exit in Drupal 7 calls the hook invoke and the php exit making the code a little cleaner and 
+ * passing the responsibility of clean-up to Drupal’s core.
+ *
+ */ 
+/**
+$form[''] = array(
+  '#type' = '',    
+);
+$form[''] = array(
+  '#type' = '',
+);
+$form[''] = array(
+  '#type' = '',
+);
+$form[''] = array(
+  '#type' = '',
+);  
+return $form;
+*/
+}
+
+function user_loggedin_name() {
+  global $user;
+  $user_name = $user->name;
+  drupal_json_output($user_name);  
+}

@@ -1,0 +1,55 @@
+<?php
+/**
+ *
+ * @file
+ * 
+ *
+ */
+
+function cropimage_field_info_alter(&$info) {
+//  dprint_r($info['image']);  exit;
+}
+
+function cropimage_form_alter(&$form, &$form_state, $form_id) {
+// dprint_r($form);  exit;
+  if (isset($form['#field']['type']) && ( $form['#field']['type']== 'image')) {
+drupal_set_message(t('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccfc'));
+ 
+  $form['crop_required_' . $form['#field']['field_name']] = array(
+      '#title' => t('click here to crop the image from center'),
+      '#description' => t('On select of this the uploaded images are croped Xpx and Ypx from center'),
+      '#default' => variable_get($form['crop_required_' . $form['#field']['field_name']]),
+      '#type' => 'checkbox',
+    );
+
+$field = 'input[name="crop_required_' . $form['#field']['field_name'] . '"]';
+
+  $form['X_' . $form['#field']['field_name']] = array(
+      '#title' => t('Please enter X value'),
+      '#type' => 'textfield',
+      '#default' => variable_get($form['X_' . $form['#field']['field_name']]),
+      '#required'  => true,
+      '#states' => array(
+        'visible' => array(
+          $field => array(
+	    'checked' => TRUE,
+          ),           
+ 	),
+      ),
+    );
+  $form['Y_' . $form['#field']['field_name']] = array(
+      '#title' => t('Please enter Y value'),
+      '#type' => 'textfield',
+      '#default' => variable_get($form['Y_' . $form['#field']['field_name']]),
+      '#required' => true,
+     '#states' => array(
+        'visible' => array(
+           $field = array(
+            'checked' => TRUE,
+          ),        
+        ),
+      ),
+
+    );
+  }
+}

@@ -1,0 +1,147 @@
+<?php
+/**
+*
+* @file js_loading
+*
+*/
+function js_loading_init() {
+$setting_variable = theme_get_setting('customtheme_val');
+
+  drupal_add_js(array(
+  'js_loading' => array(
+      'key' => 'value', 
+      'age' => '10 years',
+      'custom-settings' => $setting_variable
+      )
+    ), 'setting');
+  drupal_add_js(drupal_get_path('module', 'js_loading') . '/jstest/js_loading.js');
+}
+
+
+function js_loading_menu() {
+  $items['statestesting/form'] = array(
+    'title' => 'States testing',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('statestesting_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['ajaxtest/form'] = array(
+    'title' => 'ajax testing',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ajaxtest_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items; 
+}
+
+function statestesting_form($form, &$form_state) {
+  $form['first_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First Name'),
+    '#size' => 25
+  );
+  $form['last_name'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Last Name',
+    '#size' => 25,
+    '#states' => array(
+      'visible' => array(
+      'input[name="first_name"]' => array('filled' => TRUE),
+      ),
+    ),
+  );
+  $form['college'] = array(
+    '#type' => 'textfield',
+    '#title' => 'College',
+    '#size' => '25',
+  );
+  $form['branch'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Branch'),
+    '#size' => '25',
+    '#states' => array(
+      'visible' => array(
+      'input[name="college"]' =>  array('filled' => TRUE),
+      ),  
+    ),
+  );
+  $form['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="first_name"]' =>  array('filled' => TRUE),
+        'input[name="last_name"]' =>  array('filled' => TRUE),
+        'input[name="college"]' =>  array('filled' => TRUE),
+        'input[name="branch"]' =>  array('filled' => TRUE),
+      ),
+    ), 
+  );
+  
+ return $form; 
+}
+
+function js_loading_validate($form, &$form_state) {
+
+}
+
+function js_loading_submit($form, &$form_state) {
+
+}
+
+function ajaxtest_form($form, &$form_state) {
+
+
+}
+
+function js_loading_element_info() {
+  $types ['filter_format'] = array(
+    '#input' => TRUE,
+  );
+  return $types;
+}
+
+// hook_form_alter()
+
+/**
+ *  The following states may be applied to an element:
+
+    enabled
+    disabled
+    required
+    optional
+    visible
+    invisible
+    checked
+    unchecked
+    expanded
+    collapsed
+
+The following states may be used in remote conditions:
+
+    empty
+    filled
+    checked
+    unchecked
+    expanded
+    collapsed
+    value
+
+The following states exist for both elements and remote conditions, but are not fully implemented and may not change anything on the element:
+
+    relevant
+    irrelevant
+    valid
+    invalid
+    touched
+    untouched
+    readwrite
+    readonly
+
+ *
+ *
+ *
+ */
