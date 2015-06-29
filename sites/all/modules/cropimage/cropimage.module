@@ -268,8 +268,8 @@ function cropimage_entity_view_alter(&$build, $type) {
     $x, $y, $width, $height
    );
    // imagecrop(file_create_url($build['field_uploadimage_for_croping']['#object']->field_uploadimage_for_croping['und']['0']['uri']), $par);
-   //imagecrop ( resource $image , array $rect )
+   // imagecrop ( resource $image , array $rect )
    // image_crop();
-//  dprint_r($build[0]); exit;	
+   //  dprint_r($build[0]); exit;	
  }
 }
