@@ -135,6 +135,7 @@ function cropimage_node_view($node, $view_mode, $langcode) {
      cropimage_effect($image_object, $data);
      if(isset($image_object)  && !empty($image_object)) 
      image_save($image_object, $image['uri']); 
+     
      image_path_flush($image['uri']);
       }
      }
