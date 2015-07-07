@@ -1,0 +1,17 @@
+<?php
+
+function jobs_node_info() {
+  return array(
+  'jobs' => array(
+    'name' => 'jobs',
+    'base' => 'jobs',
+    'description' => t('Jobs'),
+    'has_title' => TRUE,
+    'title_label' => 'jobs',
+    ),
+  );
+}
+
+function jobs_form($node, $form_state) {
+    return node_content_form($node, $form_state);
+}

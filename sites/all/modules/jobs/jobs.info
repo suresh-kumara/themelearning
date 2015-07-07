@@ -1,0 +1,9 @@
+name = Jobs
+description = module help full for job listing
+core = 7.x
+dependencies[] = views
+dependencies[] = date
+
+
+;views handlers
+files[] = views/jobs_views_handler_field_apply.inc
