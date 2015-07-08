@@ -1,9 +1,35 @@
 <?php
-
+/**
+ *  @file 
+ *  jobs schema content type 
+ */ 
+// implement hook_enable()
 function jobs_enable() {
   drupal_install_schema('jobs'); 
   drupal_set_message($message = t('The jobs  module was successfully enabled.'), $type = 'status');
+
+  
   node_types_rebuild();
+/**   module_load_include('inc', 'node', 'content_types');
+  db_update('system')
+    ->condition('name', 'jobs')
+    ->condition('type', 'module')
+    ->fields(array('weight' => -1))
+    ->execute();
+
+// Optionally create the default webform type.
+  if (variable_get('jobs_install_create_content_type', TRUE)) {
+    $jobs_type = array(
+      'type' => 'jobs',
+      'name' => st('Jobs'),
+      'base' => 'node_content',
+      'custom' => TRUE,
+      'modified' => TRUE,
+      'locked' => FALSE,
+    );
+  }
+  node_type_save($jobs_type);
+*/
   $types = node_type_get_types();
   /**
   $instance = field_info_instance('node', 'body', 'jobs'); 
@@ -19,6 +45,7 @@ function jobs_enable() {
 //  drupal_install_schema('jobs'); 
 }
 
+// implementing hook_disable
 function jobs_disable() {
   drupal_uninstall_schema('jobs');  
   drupal_set_message($message = t('The jobs  module was successfully disabled.'), $type = 'status'); 
@@ -32,10 +59,10 @@ function jobs_disable() {
   // Delete all the nodes at once
   node_delete_multiple($nids);
  
-  $instance = array('field_name' => 'comment_body','bundle' => 'comment_node_jobs','entity_type' => 'comment');
+  $instance = array('field_name' => 'comment_body', 'bundle' => 'comment_node_jobs', 'entity_type' => 'comment');
   field_delete_instance($instance);
  
-  $instance = array('field_name' => 'body','bundle' => 'jobs','entity_type' => 'node');
+  $instance = array('field_name' => 'body', 'bundle' => 'jobs', 'entity_type' => 'node');
   field_delete_instance($instance);
  
    $fields = array_keys(_jobs_installed_fields());
@@ -51,7 +78,7 @@ function jobs_disable() {
 
 
 
- 
+// defining fields 
 function _jobs_installed_fields() {
  $t = get_t();
   return array(
@@ -96,7 +123,7 @@ function _jobs_installed_fields() {
 }
  
  
- 
+// defining instances for the fields   
 function _jobs_installed_instances() {
   $t = get_t();
   return array(
@@ -191,18 +218,18 @@ function _jobs_installed_instances() {
     ),
   );
 }
- 
+// implementing hook_schema 
 function jobs_schema() {
 
   $schema['jobs'] = array(
-    'description' => 'jobs applicant table',
+    'description' => 'jobs applicant table', 
     'fields'    => array(
-    'aplicant_id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+    'aplicant_id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE), 
     'job_id'       => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
-    'first_name'       => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE,'default' => 0),
-    'last_name'      => array('type' => 'varchar','length' => 40,'not null' => TRUE, 'default' => ''),
-    'date_of_birth'  => array(  'type' => 'varchar', 'mysql_type' => 'datetime','not null' => FALSE),
-    'mobile'     => array('type' => 'varchar','length' => 10,'not null' => TRUE, 'default' => ''),
+    'first_name'       => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE, 'default' => 0),
+    'last_name'      => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE, 'default' => ''),
+    'date_of_birth'  => array(  'type' => 'varchar', 'mysql_type' => 'datetime', 'not null' => FALSE),
+    'mobile'     => array('type' => 'varchar', 'length' => 10, 'not null' => TRUE, 'default' => ''),
     'name_of_the_institution'       => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
     'qualification'    => array('type' => 'varchar', 'length' => 100, 'not null' => FALSE, 'default' => ''),
     'fixed_compensation'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
@@ -216,6 +243,7 @@ function jobs_schema() {
     'candidate_ex_employee_check' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
     'resume' =>  array('type' => 'int', 'not null' => TRUE, 'default' => 0),
     'cover_letter' =>  array('type' => 'text', 'not null' => TRUE),
+    'email' =>  array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
   ),
 /**  
  'indexes' => array( 

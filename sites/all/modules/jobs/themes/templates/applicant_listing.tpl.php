@@ -2,6 +2,7 @@
 <table>
 <tr>
 <?php
+if ( isset($result) && !empty($result)) {
 foreach($result as $row) { 
 foreach( $row as $key => $val) { 
 switch($key) { 
@@ -81,7 +82,10 @@ default:  ?>
  break; 
   } 
  } 
-} ?>
+}}
+else { ?>
+  <tr> <td>Result not found</td>
+<?php }?>
 </tr>
 </table>
 </div>
