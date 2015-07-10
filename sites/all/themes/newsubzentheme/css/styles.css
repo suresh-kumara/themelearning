@@ -159,7 +159,3 @@ fieldset {
 .CSSTableGenerator tr:first-child td:last-child{
 	border-width:0px 0px 1px 1px;
 }
-
-.error_resume {
-    color: red;
-}
