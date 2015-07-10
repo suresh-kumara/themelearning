@@ -164,28 +164,28 @@ return $form;
 }
 // first step in multistep form 
 function jobs_steps_personal_details($form, &$form_state) {
-  // echo '<pre>';print_r($form_state);  exit;
-  $values = isset($form_state['multistep_values']['personal_details']) ? $form_state['multistep_values']['personal_details'] : array();
-  
-  $form['some_text'] = array(
-    '#markup' => '<p>All fields marked with <span class="red">*</span> are mandatory</p>'
-  );
-  
-  $form['personal_details'] = array(
-    '#type' => 'fieldset', 
-    '#title' => 'Personal Details',
-  );
+// echo '<pre>';print_r($form_state);  exit;
+ $values = isset($form_state['multistep_values']['personal_details']) ? $form_state['multistep_values']['personal_details'] : array();
 
-  $form['first_name'] = array(
-    '#prefix' => '<div class="container-inline">',
-    '#type' => 'textfield', 
-    '#title' =>  'First name',
-    '#size' => 45,
-    '#maxlength' => 45,
-    '#required' => TRUE,
-    '#suffix' => '</div>',
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? $form_state['multistep_values']['personal_details']['first_name'] : '',
-  );
+ $form['some_text'] = array(
+  '#markup' => '<p>All fields marked with <span class="red">*</span> are mandatory</p>'
+ );
+
+ $form['personal_details'] = array(
+   '#type' => 'fieldset', 
+   '#title' => 'Personal Details',
+ );
+
+ $form['first_name'] = array(
+   '#prefix' => '<div class="container-inline">',
+   '#type' => 'textfield', 
+   '#title' =>  'First name',
+   '#size' => 45,
+   '#maxlength' => 45,
+   '#required' => TRUE,
+   '#suffix' => '</div>',
+   '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? $form_state['multistep_values']['personal_details']['first_name'] : '',
+ );
 
  $form['last_name'] = array(
    '#type' => 'textfield', 
@@ -398,7 +398,7 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
  $form['captcha'] = array(
   '#type' => 'captcha',
   '#captcha_type' => 'image_captcha/Image',
-);
+ );
 
 
  $form['resume'] = array(
@@ -410,8 +410,8 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
      'file_validate_extensions' => array('txt pdf doc docx'),
      'file_validate_size' => array(1024*1024*2),   
    ),    
-   '#required' => TRUE,
    '#default_value' => isset($form_state['multistep_values']['uploadresume']['resume']) ? $form_state['multistep_values']['uploadresume']['resume'] : '',
+   '#field_prefix' => '</span class="error_resume">*</span>',
  );
 
 
@@ -441,11 +441,10 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
 
 // validate data based on each step 
 function jobs_steps_form_validate($form, &$form_state) {
-// print_r($form_state); exit; 
- if ($form_state['triggering_element']['#value'] == 'Back') {
-
+ if ($form_state['triggering_element']['#value'] == 'Back') { 
    return;
  }
+ 
 // print_r($form_state['stage']);  exit;
   switch ($form_state['stage']) { 
    case 'personal_details': 
@@ -519,9 +518,15 @@ function job_details_validate($form, &$form_state) {
 
 // validate all form data after submission of form in 3rd step
 function steps_uploadresume_validate($form, &$form_state) {
-//  echo '<pre>'; print_r($form_state); exit;
-  if (!isset($form_state['values']['cover_letter']) || ($form_state['values']['cover_letter'] == '') || 
-(strlen($form_state['values']['cover_letter']) <  20 )) {
+ if (isset($form_state['triggering_element']['#value'])  && ($form_state['triggering_element']['#value'] == 'Next')) { 
+   if  (!isset($form_state['values']['resume']) || ($form_state['values']['resume'] == '') ) {
+    form_set_error($form_state['values']['resume'], t('Resume field is required')); 
+  } 
+ }
+ 
+// print_r($form_state['triggering_element']['#value']);  exit;
+  if ((!isset($form_state['values']['cover_letter']) || ($form_state['values']['cover_letter'] == '') || 
+(strlen($form_state['values']['cover_letter']) <  20 ))) {
     form_set_error($form_state['values']['cover_letter'], t('Cover letter is required minimum 20 letters')); 
   }
 }
@@ -586,9 +591,6 @@ if (!isset($form_state['values']['fixed_compensation']) || (!ctype_digit($form_s
 // saving form data to db
 function steps_review_resend_submit($form, &$form_state) {
 // echo '<pre>'; print_r($form_state['values']);  exit;  
-
-
-
 $fields = array();
 
 if(isset($form_state['build_info']['args']['0'])) {
@@ -598,6 +600,7 @@ $fields['job_id'] = $form_state['build_info']['args']['0'];
 $job_exist = db_select('node', 'n')
              ->fields('n')
              ->condition('nid', $fields['job_id'], '=')
+             ->condition('type', 'jobs', '=')
              ->execute()
              ->fetchAll();
 
@@ -1000,8 +1003,7 @@ function jobs_recieved_applications() {
        l($imgpath->filename, file_create_url($imgpath->uri)));
   }
  return theme('table', array('header' => $header, 'rows' => $rows));
- }
- else {
+ } else {
   drupal_set_message(t('No result found'));
 return '';
  }
