@@ -411,7 +411,7 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
      'file_validate_size' => array(1024*1024*2),   
    ),    
    '#default_value' => isset($form_state['multistep_values']['uploadresume']['resume']) ? $form_state['multistep_values']['uploadresume']['resume'] : '',
-   '#field_prefix' => '</span class="error_resume">*</span>',
+   '#field_prefix' => '(resume filed is required)',
  );
 
 
