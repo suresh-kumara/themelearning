@@ -164,28 +164,28 @@ return $form;
 }
 // first step in multistep form 
 function jobs_steps_personal_details($form, &$form_state) {
-// echo '<pre>';print_r($form_state);  exit;
- $values = isset($form_state['multistep_values']['personal_details']) ? $form_state['multistep_values']['personal_details'] : array();
+  // echo '<pre>';print_r($form_state);  exit;
+  $values = isset($form_state['multistep_values']['personal_details']) ? $form_state['multistep_values']['personal_details'] : array();
+  
+  $form['some_text'] = array(
+    '#markup' => '<p>All fields marked with <span class="red">*</span> are mandatory</p>'
+  );
+  
+  $form['personal_details'] = array(
+    '#type' => 'fieldset', 
+    '#title' => 'Personal Details',
+  );
 
- $form['some_text'] = array(
-  '#markup' => '<p>All fields marked with <span class="red">*</span> are mandatory</p>'
- );
-
- $form['personal_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' => 'Personal Details',
- );
-
- $form['first_name'] = array(
-   '#prefix' => '<div class="container-inline">',
-   '#type' => 'textfield', 
-   '#title' =>  'First name',
-   '#size' => 45,
-   '#maxlength' => 45,
-   '#required' => TRUE,
-   '#suffix' => '</div>',
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? $form_state['multistep_values']['personal_details']['first_name'] : '',
- );
+  $form['first_name'] = array(
+    '#prefix' => '<div class="container-inline">',
+    '#type' => 'textfield', 
+    '#title' =>  'First name',
+    '#size' => 45,
+    '#maxlength' => 45,
+    '#required' => TRUE,
+    '#suffix' => '</div>',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? $form_state['multistep_values']['personal_details']['first_name'] : '',
+  );
 
  $form['last_name'] = array(
    '#type' => 'textfield', 
@@ -1000,7 +1000,8 @@ function jobs_recieved_applications() {
        l($imgpath->filename, file_create_url($imgpath->uri)));
   }
  return theme('table', array('header' => $header, 'rows' => $rows));
- } else {
+ }
+ else {
   drupal_set_message(t('No result found'));
 return '';
  }
