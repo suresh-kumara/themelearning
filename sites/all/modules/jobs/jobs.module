@@ -398,6 +398,7 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
  $form['captcha'] = array(
   '#type' => 'captcha',
   '#captcha_type' => 'image_captcha/Image',
+  '#required' => FALSE, 
  );
 
 
