@@ -441,8 +441,8 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
 
 // validate data based on each step 
 function jobs_steps_form_validate($form, &$form_state) {
- if ($form_state['triggering_element']['#value'] == 'Back') { 
 	 $form_state['complete form']['captcha']['validated'] = 0;    
+ if ($form_state['triggering_element']['#value'] == 'Back') { 
    return;
  }
  
