@@ -206,26 +206,32 @@ function jobs_steps_personal_details($form, &$form_state) {
    '#element_validate' => array('jobs_email_element_validate'),
  );
 
+// $mindate = date('d/m/Y');
 
  $form['date_of_birth'] = array(
    '#type' => 'datepicker',
-  '#date_format' => 'd/m/Y', 
+   '#date_format' => 'd/m/Y', 
    '#title' =>  'Date of birth',
    '#required' => TRUE,
    '#size' => 50,
    '#default_value' => isset($form_state['multistep_values']['personal_details']['date_of_birth']) ? $form_state['multistep_values']['personal_details']['date_of_birth'] : '',
+   '#date_year_range' => '-60:-18',
+/**   '#datepicker_options' => array(
+//    'maxDate' => '-20Y',
+      'minDate' => -5000,
+   ),  */
  );
-
-/**
- $form['country_code'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'country_code'),
+ 
+ /**
+ $form['mobile'] = array(
+   '#type' => 'phone_number', 
+   '#title' =>  'country_code',
    '#size' => 10,
    '#maxlength' => 10,
    '#required' => TRUE,
  );
-*/
- $form['mobile'] = array(
+ */
+$form['mobile'] = array(
    '#type' => 'textfield', 
    '#title' =>  'Mobile',
    '#size' => 10,
@@ -441,7 +447,7 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
 
 // validate data based on each step 
 function jobs_steps_form_validate($form, &$form_state) {
-echo print_r($form_state['complete form']['captcha']['validated']);  exit;    
+// echo '<pre>';print_r($form_state['complete form']['captcha']);  exit;
  if ($form_state['triggering_element']['#value'] == 'Back') { 
    return;
  }
@@ -596,11 +602,12 @@ $fields = array();
 
 if(isset($form_state['build_info']['args']['0'])) {
 $fields['job_id'] = $form_state['build_info']['args']['0'];
+$job = base64_decode($fields['job_id']);  
 
 // echo $fields['job_id'];  exit; 
 $job_exist = db_select('node', 'n')
              ->fields('n')
-             ->condition('nid', $fields['job_id'], '=')
+             ->condition('nid', $job, '=')
              ->condition('type', 'jobs', '=')
              ->execute()
              ->fetchAll();
@@ -794,8 +801,9 @@ if ( isset( $form_state['multistep_values']['personal_details']['date_of_birth']
    '#required' => TRUE,
    '#size' => 50,
    '#default_value' => $form_state['multistep_values']['personal_details']['date_of_birth'],
+   '#date_year_range' => '-60:-18',
  );
-
+ 
 /**
  $form['country_code'] = array(
    '#type' => 'textfield', 
@@ -999,7 +1007,7 @@ function jobs_recieved_applications() {
      $imgpath = file_load($value->resume);
      $rows[] = array(
        '<a href=' . base_path() . 'node/' . $value->nid . '> ' . $value->title . '<a>',
-     '<a href=' . base_path() . 'applicant_details/' . $value->aplicant_id . '> ' . $value->first_name . ' ' . $value->last_name . '</a>', 
+     '<a href=' . base_path() . 'applicant_details/' . base64_encode($value->aplicant_id) . '> ' . $value->first_name . ' ' . $value->last_name . '</a>', 
        $value->mobile, 
        l($imgpath->filename, file_create_url($imgpath->uri)));
   }
@@ -1027,7 +1035,7 @@ function applicant_details($applicant_id) {
   $result->join('node', 'n', 'j.job_id = n.nid');
   $result->fields('n', array('title', 'nid'))
      ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'date_of_birth', 'mobile', 'name_of_the_institution', 'qualification', 'fixed_compensation', 'variable_compensation', 'current_location', 'permanent_location', 'company', 'years_of_experience', 'notice_period', 'current_role', 'candidate_ex_employee_check', 'resume', 'cover_letter'))
-     ->condition('j.aplicant_id', $applicant_id, '=');
+     ->condition('j.aplicant_id', base64_decode($applicant_id), '=');
  $query = $result->execute()->fetchAll();
 
 // print_r();  exit; 

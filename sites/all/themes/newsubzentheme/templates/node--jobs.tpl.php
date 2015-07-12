@@ -41,8 +41,10 @@
     print render($content['last_date']);
     print render($content['no_of_openings']);
   ?>
-<?php if (isset($content['last_date']['#object']->last_date['und']['0']['value']) && strtotime($content['last_date']['#object']->last_date['und']['0']['value']) > strtotime(date('l, F j, Y'))) {  ?>
-  <p><a href="<?php echo base_path(). 'apply/jobid/' . $nid; ?>" class="btn" data-thmr="thmr_47 thmr_48">Apply</a></p>
+<?php if (isset($content['last_date']['#object']->last_date['und']['0']['value']) && strtotime($content['last_date']['#object']->last_date['und']['0']['value']) > strtotime(date('l, F j, Y'))) {  
+$jobid = base64_encode($nid);
+?>
+  <p><a href="<?php echo base_path(). 'apply/jobid/' . $jobid; ?>" class="btn" data-thmr="thmr_47 thmr_48">Apply</a></p>
 <?php } ?>
   <?php print render($content['links']); ?>
   
