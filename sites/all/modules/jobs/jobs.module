@@ -383,6 +383,7 @@ $form['company'] = array(
  $form['back'] = array(
    '#type' => 'submit',
    '#value' => t('Back'),
+   '#limit_validation_errors' => array(),
 //   '#submit' => array('job_details_form'),
  );
 
@@ -432,8 +433,8 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
  $form['back'] = array(
    '#type' => 'submit',
    '#value' => t('Back'),
-//   '#submit' => array('jobs_steps_personal_details_form'),
- );
+   '#limit_validation_errors' => array(),
+);
 
 
  $form['next'] = array(
@@ -447,8 +448,8 @@ $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['
 
 // validate data based on each step 
 function jobs_steps_form_validate($form, &$form_state) {
-// echo '<pre>';print_r($form_state['complete form']['captcha']);  exit;
- if ($form_state['triggering_element']['#value'] == 'Back') { 
+if ($form_state['triggering_element']['#value'] == 'Back') {
+//    unset($form['captcha']); 
    return;
  }
  
@@ -525,7 +526,7 @@ function job_details_validate($form, &$form_state) {
 
 // validate all form data after submission of form in 3rd step
 function steps_uploadresume_validate($form, &$form_state) {
- if (isset($form_state['triggering_element']['#value'])  && ($form_state['triggering_element']['#value'] == 'Next')) { 
+if (isset($form_state['triggering_element']['#value'])  && ($form_state['triggering_element']['#value'] == 'Next')) { 
    if  (!isset($form_state['values']['resume']) || ($form_state['values']['resume'] == '') ) {
      form_set_error($form_state['values']['resume'], t('Resume field is required')); 
    } 
@@ -710,7 +711,7 @@ else {
  * if the form stage is review_resend then  submit the form else one step up or one step down
  */
 function jobs_steps_form_submit($form, &$form_state) {
-//print_r($form_state['triggering_element']['#value']);  exit;
+// echo '<pre>'; print_r($form_state);  exit;
  switch ($form_state['stage']) {
    case 'review_resend':
      $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
@@ -1041,3 +1042,13 @@ function applicant_details($applicant_id) {
 // print_r();  exit; 
  return theme('applicant_listing', array('result' => $query));
 }
+
+function jobs_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == '') {
+    $form['actions']['back']['#submit'][] = array();
+    $form['actions']['back']['#limit_validation_errors'] = array();
+  }
+}
+
+
+
