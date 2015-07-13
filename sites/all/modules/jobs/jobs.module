@@ -360,9 +360,9 @@ function applicant_details($applicant_id) {
  * Implements hook_form_FORM_ID_alter().  hook_form_FORM_ID_alter(&$form, &$form_state, $form_id)
  */
 function jobs_form_alter(&$form, &$form_state, $form_id) {
+  print_r($form_id);  exit;
   if ($form_id == 'jobs_steps_form') {
     if (isset($form_state['triggering_element']['#value']) && ($form_state['triggering_element']['#value'] == 'Back')) {
     $form['captcha_response']['#required'] = FALSE;
-    }
   }
 }
