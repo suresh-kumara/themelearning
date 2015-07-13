@@ -229,11 +229,7 @@ function jobs_steps_form_validate($form, &$form_state) {
     unset($form_state['complete form']['captcha']);
     unset($form_state['captcha_info']);
     unset($form_state['buttons']['2']['#executes_submit_callback']);
-  [captcha] => 
-            [captcha_sid] => 92
-            [captcha_token] => cb2908885ecc0f9b0f03f970bfe30de0
-            [captcha_response] => 
-    echo '<pre>'; print_r($form_state);  exit; 
+//    echo '<pre>'; print_r($form_state);  exit; 
     return;
   }
   switch ($form_state['stage']) { 
