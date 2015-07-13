@@ -221,6 +221,7 @@ return $form;
 
 function jobs_steps_form_validate($form, &$form_state) {
   if ($form_state['triggering_element']['#value'] == 'Back') {
+    form_clear_error();
     return;
   }
   switch ($form_state['stage']) { 
@@ -261,7 +262,6 @@ function jobs_steps_form_submit($form, &$form_state) {
     drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
   }
   if ($form_state['triggering_element']['#value'] == 'Back') {
-    form_clear_error();
     $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
   } 
   if (isset($form_state['multistep_values']['form_build_id'])) {
