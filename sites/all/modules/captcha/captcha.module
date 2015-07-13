@@ -704,7 +704,7 @@ function captcha_validate($element, &$form_state) {
       if ($captcha_persistence == CAPTCHA_PERSISTENCE_SKIP_ONCE_SUCCESSFUL || $captcha_persistence == CAPTCHA_PERSISTENCE_SKIP_ONCE_SUCCESSFUL_PER_FORM_TYPE) {
         $_SESSION['captcha_success_form_ids'][$form_id] = $form_id;
       }
-
+echo 'hai'; exit;
       // Record success.
       db_update('captcha_sessions')
         ->condition('csid', $csid)
@@ -713,6 +713,7 @@ function captcha_validate($element, &$form_state) {
         ->execute();
     }
     else {
+echo 'hai22222222'; exit;
       // Wrong answer.
       db_update('captcha_sessions')
         ->condition('csid', $csid)
