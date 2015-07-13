@@ -104,6 +104,7 @@ function jobs_email_element_validate($element, &$form_state, $form) {
  * Form constructor for job details in a multi step form.
  */
 function job_details_form($form, &$form_state) {
+// echo <pre>; print_r($_SESSION);  exit; 
   $values = isset($form_state['multistep_values']['job_details']) ? $form_state['multistep_values']['job_details'] : array();
   $form['compensation_details'] = array(
     '#type' => 'fieldset', 
@@ -180,7 +181,6 @@ function job_details_form($form, &$form_state) {
   $form['back'] = array(
     '#type' => 'submit',
     '#value' => t('Back'),
-    '#limit_validation_errors' => array(),
   );
   $form['next'] = array(
     '#type' => 'submit',
@@ -194,6 +194,7 @@ function job_details_form($form, &$form_state) {
  */
 
 function steps_uploadresume_form($form, &$form_state) {
+// echo '<pre>'; print_r($_SESSION);  exit; 
   $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['multistep_values']['uploadresume'] : array();
   $form['captcha'] = array(
     '#type' => 'captcha',
@@ -219,7 +220,6 @@ function steps_uploadresume_form($form, &$form_state) {
   $form['back'] = array(
     '#type' => 'submit',
     '#value' => t('Back'),
-    '#limit_validation_errors' => array(),
   );
   $form['next'] = array(
     '#type' => 'submit',

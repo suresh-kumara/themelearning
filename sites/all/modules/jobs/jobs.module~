@@ -256,19 +256,19 @@ function jobs_steps_form_submit($form, &$form_state) {
       $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
       $form_state['new_stage'] = job_details_move_to_next_stage($form, $form_state);
       break;
- }
- if (isset($form_state['complete'])) {
-   drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
- }
- if ($form_state['triggering_element']['#value'] == 'Back') {
-   $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
- } 
- if (isset($form_state['multistep_values']['form_build_id'])) {
-   $form_state['values']['form_build_id'] = $form_state['multistep_values']['form_build_id'];
- }
- $form_state['multistep_values']['form_build_id'] = $form_state['values']['form_build_id'];
- $form_state['stage'] = $form_state['new_stage'];
- $form_state['rebuild'] = TRUE;
+  }
+  if (isset($form_state['complete'])) {
+    drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
+  }
+  if ($form_state['triggering_element']['#value'] == 'Back') {
+    $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
+  } 
+  if (isset($form_state['multistep_values']['form_build_id'])) {
+    $form_state['values']['form_build_id'] = $form_state['multistep_values']['form_build_id'];
+  }
+  $form_state['multistep_values']['form_build_id'] = $form_state['values']['form_build_id'];
+  $form_state['stage'] = $form_state['new_stage'];
+  $form_state['rebuild'] = TRUE;
 }
 
 /**
