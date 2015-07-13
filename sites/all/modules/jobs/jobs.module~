@@ -220,7 +220,7 @@ return $form;
  */
 
 function jobs_steps_form_validate($form, &$form_state) {
-$form_state['complete form']['captcha'] = array(); 
+echo '<pre>'; print_r($form);  exit; 
   if ($form_state['triggering_element']['#value'] == 'Back') {
     unset($form_state['complete form']['captcha']);
     unset($form_state['captcha_info']);
