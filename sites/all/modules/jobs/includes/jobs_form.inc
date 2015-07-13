@@ -199,6 +199,7 @@ function steps_uploadresume_form($form, &$form_state) {
   $form['captcha'] = array(
     '#type' => 'captcha',
     '#captcha_type' => 'image_captcha/Image',
+    '#captcha_validate' => array(),  	
   );
   $form['resume'] = array(
     '#type' => 'managed_file', 
