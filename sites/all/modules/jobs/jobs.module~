@@ -220,9 +220,19 @@ return $form;
  */
 
 function jobs_steps_form_validate($form, &$form_state) {
+  $form_state['complete form']['clicked_button']['#executes_submit_callback'] = 0;
+  $form_state['complete form']['triggering_element']['#executes_submit_callback'] = 0;
+  $form_state['complete form']['back']['#executes_submit_callback'] = 0;
+  $form_state['input']['values'] = 0;
+ 
   if ($form_state['triggering_element']['#value'] == 'Back') {
     unset($form_state['complete form']['captcha']);
     unset($form_state['captcha_info']);
+    unset($form_state['buttons']['2']['#executes_submit_callback']);
+  [captcha] => 
+            [captcha_sid] => 92
+            [captcha_token] => cb2908885ecc0f9b0f03f970bfe30de0
+            [captcha_response] => 
     echo '<pre>'; print_r($form_state);  exit; 
     return;
   }
