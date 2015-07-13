@@ -361,7 +361,6 @@ function applicant_details($applicant_id) {
  */
 function jobs_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'jobs_steps_form') {
-     echo '<pre>'; print_r($form_id);  exit;
     if (isset($form_state['triggering_element']['#value']) && ($form_state['triggering_element']['#value'] == 'Back')) {
     $form['captcha_response']['#required'] = FALSE;
     }
