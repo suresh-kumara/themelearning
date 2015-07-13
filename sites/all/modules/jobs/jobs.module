@@ -220,8 +220,6 @@ return $form;
  */
 
 function jobs_steps_form_validate($form, &$form_state) {
-  echo 'validate'; 
-  form_clear_error();
   if ($form_state['triggering_element']['#value'] == 'Back') {
     return;
   }
