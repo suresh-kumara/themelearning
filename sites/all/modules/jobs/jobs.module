@@ -33,6 +33,7 @@ function jobs_node_info() {
  * Implements hook_form();
  *
  */
+
 function jobs_form($node, $form_state) {
   return node_content_form($node, $form_state);
 }

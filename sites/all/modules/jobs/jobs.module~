@@ -33,6 +33,7 @@ function jobs_node_info() {
  * Implements hook_form();
  *
  */
+
 function jobs_form($node, $form_state) {
   return node_content_form($node, $form_state);
 }
@@ -215,7 +216,7 @@ return $form;
 /**
  * Form validation handler for jobs_steps_form().
  *
- * @see user_login_form_validate()
+ * @see hook_form_validate()
  */
 
 function jobs_steps_form_validate($form, &$form_state) {
@@ -241,7 +242,7 @@ function jobs_steps_form_validate($form, &$form_state) {
 /**
  * Form submission handler for jobs_steps_form().
  *
- * @see hook_form_validate()
+ * @see hook_form_submit()
  */
 function jobs_steps_form_submit($form, &$form_state) {
   switch ($form_state['stage']) {

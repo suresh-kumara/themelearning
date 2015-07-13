@@ -27,8 +27,7 @@ function jobs_steps_personal_details($form, &$form_state) {
     '#maxlength' => 45,
     '#required' => TRUE,
     '#suffix' => '</div>',
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? 
-      $form_state['multistep_values'] ['personal_details']['first_name'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? $form_state['multistep_values'] ['personal_details']['first_name'] : '',
   );
   $form['last_name'] = array(
     '#type' => 'textfield', 
@@ -36,8 +35,7 @@ function jobs_steps_personal_details($form, &$form_state) {
     '#size' => 45,
     '#required' => TRUE,
     '#maxlength' => 45,
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['last_name']) ? 
-     $form_state['multistep_values']['personal_details']['last_name'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['last_name']) ? $form_state['multistep_values']['personal_details']['last_name'] : '',
   );
   $form['email'] = array(
     '#type' => 'textfield', 
@@ -45,8 +43,7 @@ function jobs_steps_personal_details($form, &$form_state) {
     '#size' => 60,
     '#required' => TRUE,
     '#autocomplete_path' => FALSE,
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['email']) ? 
-      $form_state['multistep_values']['personal_details']['email'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['email']) ? $form_state['multistep_values']['personal_details']['email'] : '',
     '#element_validate' => array('jobs_email_element_validate'),
   );
   $form['date_of_birth'] = array(
@@ -55,8 +52,7 @@ function jobs_steps_personal_details($form, &$form_state) {
     '#title' =>  'Date of birth',
     '#required' => TRUE,
     '#size' => 50,
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['date_of_birth']) ? 
-      $form_state['multistep_values']['personal_details']['date_of_birth'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['date_of_birth']) ? $form_state['multistep_values']['personal_details']['date_of_birth'] : '',
     '#date_year_range' => '-60:-18',
   );
   $form['mobile'] = array(
@@ -65,8 +61,7 @@ function jobs_steps_personal_details($form, &$form_state) {
     '#size' => 10,
     '#maxlength' => 10,
     '#required' => TRUE,
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['mobile']) ? 
-      $form_state['multistep_values']['personal_details']['mobile'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['mobile']) ? $form_state['multistep_values']['personal_details']['mobile'] : '',
   );
   $form['institution_details'] = array(
     '#type' => 'fieldset', 
@@ -76,16 +71,14 @@ function jobs_steps_personal_details($form, &$form_state) {
     '#type' => 'textfield', 
     '#title' =>  'Name of the institution',
     '#required' => TRUE,
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['name_of_the_institution']) ? 
-      $form_state['multistep_values']['personal_details']['name_of_the_institution'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['name_of_the_institution']) ? $form_state['multistep_values']['personal_details']['name_of_the_institution'] : '',
   );
   $form['qualification'] = array(
     '#type' => 'textfield', 
     '#title' =>  'qualification',
     '#size' => 60,
     '#required' => TRUE,
-    '#default_value' => isset($form_state['multistep_values']['personal_details']['qualification']) ? 
-      $form_state['multistep_values']['personal_details']['qualification'] : '',
+    '#default_value' => isset($form_state['multistep_values']['personal_details']['qualification']) ? $form_state['multistep_values']['personal_details']['qualification'] : '',
   );
 
   $form['next'] = array(
@@ -121,14 +114,12 @@ function job_details_form($form, &$form_state) {
   $form['fixed_compensation'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Fixed Compensation',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['fixed_compensation']) ? 
-      $form_state['multistep_values']['job_details']['fixed_compensation'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['fixed_compensation']) ? $form_state['multistep_values']['job_details']['fixed_compensation'] : '',
   );
   $form['variable_compensation'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Variable Compensation',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['variable_compensation']) ? 
-    $form_state['multistep_values']['job_details']['variable_compensation'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['variable_compensation']) ? $form_state['multistep_values']['job_details']['variable_compensation'] : '',
   );
   $form['Location Details'] = array(
     '#type' => 'fieldset', 
@@ -139,14 +130,12 @@ function job_details_form($form, &$form_state) {
   $form['current_location'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Current Location',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['current_location']) ? 
-      $form_state['multistep_values']['job_details']['current_location'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['current_location']) ? $form_state['multistep_values']['job_details']['current_location'] : '',
   );
   $form['permanent_location'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Permanent Location',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['permanent_location']) ? 
-      $form_state['multistep_values']['job_details']['permanent_location'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['permanent_location']) ? $form_state['multistep_values']['job_details']['permanent_location'] : '',
   );
   $form['current_role_details'] = array(
     '#type' => 'fieldset', 
@@ -157,20 +146,17 @@ function job_details_form($form, &$form_state) {
   $form['company'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Company',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['company']) ? 
-      $form_state['multistep_values']['job_details']['company']  : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['company']) ? $form_state['multistep_values']['job_details']['company']  : '',
   );
   $form['years_of_experience'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Years of Experience',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['years_of_experience']) ? 
-      $form_state['multistep_values']['job_details']['years_of_experience'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['years_of_experience']) ? $form_state['multistep_values']['job_details']['years_of_experience'] : '',
   );
   $form['current_role'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Current Role',
-    '#default_value' => isset($form_state['multistep_values']['job_details']['current_role']) ?
-      $form_state['multistep_values']['job_details']['current_role'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['current_role']) ? $form_state['multistep_values']['job_details']['current_role'] : '',
   );
   $form['notice_period'] = array(
     '#type' => 'textfield', 
@@ -178,8 +164,7 @@ function job_details_form($form, &$form_state) {
     '#suffix' => t('no of days'),
     '#size' => 2,
     '#maxlength' => 2,
-    '#default_value' => isset($form_state['multistep_values']['job_details']['notice_period']) ? 
-      $form_state['multistep_values']['job_details']['notice_period'] : '',
+    '#default_value' => isset($form_state['multistep_values']['job_details']['notice_period']) ? $form_state['multistep_values']['job_details']['notice_period'] : '',
   );
   $form['other_information'] = array(
     '#type' => 'fieldset', 
@@ -223,15 +208,13 @@ function steps_uploadresume_form($form, &$form_state) {
       'file_validate_extensions' => array('txt pdf doc docx'),
       'file_validate_size' => array(1024*1024*2),   
     ),    
-    '#default_value' => isset($form_state['multistep_values']['uploadresume']['resume']) ? 
-      $form_state['multistep_values']['uploadresume']['resume'] : '',
+    '#default_value' => isset($form_state['multistep_values']['uploadresume']['resume']) ? $form_state['multistep_values']['uploadresume']['resume'] : '',
     '#field_prefix' => '(resume filed is required)',
   );
   $form['cover_letter'] = array(
     '#type' => 'textarea', 
     '#title' =>  'Cover Letter',
-    '#default_value' => isset($form_state['multistep_values']['uploadresume']['cover_letter']) ? 
-      $form_state['multistep_values']['uploadresume']['cover_letter'] : '',
+    '#default_value' => isset($form_state['multistep_values']['uploadresume']['cover_letter']) ? $form_state['multistep_values']['uploadresume']['cover_letter'] : '',
   );
   $form['back'] = array(
     '#type' => 'submit',
