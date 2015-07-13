@@ -247,7 +247,6 @@ function jobs_steps_form_validate($form, &$form_state) {
  * @see hook_form_submit()
  */
 function jobs_steps_form_submit($form, &$form_state) {
-  form_clear_error();
   switch ($form_state['stage']) {
     case 'review_resend':
       $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
@@ -264,8 +263,7 @@ function jobs_steps_form_submit($form, &$form_state) {
     drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
   }
   if ($form_state['triggering_element']['#value'] == 'Back') {
-    unset($form_state['complete form']['captcha']);
-    unset($form_state['captcha_info']);
+    form_clear_error();
     $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
   } 
   if (isset($form_state['multistep_values']['form_build_id'])) {
