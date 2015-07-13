@@ -1,11 +1,18 @@
 <?php
+/**
+ * @file
+ * The theme system, which controls the output of Drupal.
+ *
+ * The theme system allows for nearly all output of the Drupal system to be
+ * customized by user themes.
+ */
 
-// review the submitted data (4th step in multistep)
+/**
+ *
+ * 
+ */
+
 function steps_review_resend_form($form, &$form_state) {
-
-// echo '<pre>';  print_r($form_state['values']);  exit;
-// print_r($form_state['multistep_values']['personal_details']['email'] );  exit;
-
 
 $values = isset($form_state['multistep_values']['review_resend']) ? $form_state['multistep_values']['review_resend'] : array();
 
@@ -61,15 +68,6 @@ if ( isset( $form_state['multistep_values']['personal_details']['date_of_birth']
    '#date_year_range' => '-60:-18',
  );
  
-/**
- $form['country_code'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'country_code'),
-   '#size' => 10,
-   '#maxlength' => 10,
-   '#required' => TRUE,
- );
-*/
 
 if ( isset($form_state['multistep_values']['personal_details']['mobile']))
  $form['mobile'] = array(
@@ -222,8 +220,6 @@ if ( isset($form_state['multistep_values']['uploadresume']['cover_letter']))
    '#title' =>  'Cover Letter',
    '#default_value' => $form_state['multistep_values']['uploadresume']['cover_letter'], 
  );
-
-// $form_state['stage'] == 'uploadresume_form';
 
 $form['submit'] = array(
    '#type' => 'submit', 

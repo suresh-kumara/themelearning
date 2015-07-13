@@ -18,12 +18,12 @@ module_load_include('inc', 'jobs', 'includes/jobs_review_resend_submit');
 
 function jobs_node_info() {
   return array(
-  'jobs' => array(
-    'name' => 'jobs',
-    'base' => 'jobs',
-    'description' => t('Jobs'),
-    'has_title' => TRUE,
-    'title_label' => 'jobs',
+    'jobs' => array(
+      'name' => 'jobs',
+      'base' => 'jobs',
+      'description' => t('Jobs'),
+      'has_title' => TRUE,
+      'title_label' => 'jobs',
     ),
   );
 }
@@ -119,28 +119,28 @@ function jobs_menu() {
  */
 
 function jobs_steps_form($form, &$form_state) {
-if (!isset($form_state['stage'])) $form_state['stage'] = 'personal_details';
+  if (!isset($form_state['stage'])) 
+    $form_state['stage'] = 'personal_details';
   $form = array();
   $form = jobs_steps_navigation($form, $form_state);
   switch ($form_state['stage']) { 
-   case 'personal_details': 
-     return  jobs_steps_personal_details($form, $form_state);
-     break;      
-   case 'job_details':  
-     return  job_details_form($form, $form_state);
-     break;
-   case 'uploadresume':  
-     return  steps_uploadresume_form($form, $form_state);
-     break;
-   case 'review_resend':  
-     return steps_review_resend_form($form, $form_state); 
-     break;
+    case 'personal_details': 
+      return  jobs_steps_personal_details($form, $form_state);
+      break;      
+    case 'job_details':  
+      return  job_details_form($form, $form_state);
+      break;
+    case 'uploadresume':  
+      return  steps_uploadresume_form($form, $form_state);
+      break;
+    case 'review_resend':  
+      return steps_review_resend_form($form, $form_state); 
+      break;
   }
 }
 
 /**
- *
- * 
+ * helps in navigation when user clicks next button
  */
 
 function job_details_move_to_next_stage($form, &$form_state) {
@@ -157,8 +157,7 @@ function job_details_move_to_next_stage($form, &$form_state) {
 }
 
 /**
- *
- * 
+ * helps in navigation when user clicks back button
  */
 
 function job_details_move_to_previous_stage($form, &$form_state) {
@@ -177,8 +176,7 @@ function job_details_move_to_previous_stage($form, &$form_state) {
 }
 
 /**
- *
- * 
+ * list and highlights the current form step of multistep form
  */
 
 function jobs_steps_navigation($form, &$form_state) {
@@ -217,68 +215,63 @@ return $form;
 /**
  * Form validation handler for jobs_steps_form().
  *
- * @see user_login_form_validate()
+ * @see hook_form_validate()
  */
 
 function jobs_steps_form_validate($form, &$form_state) {
-if ($form_state['triggering_element']['#value'] == 'Back') {
-   return;
- }
-   switch ($form_state['stage']) { 
-   case 'personal_details': 
-     return  jobs_steps_personal_details_validate($form, $form_state);
-     break;      
-   case 'job_details':  
-     return  job_details_validate($form, $form_state);
-     break;
-   case 'uploadresume':  
-     return  steps_uploadresume_validate($form, $form_state);
-     break;
-   case 'review_resend':  
-     return steps_review_resend_validate($form, $form_state); 
-     break;
+  if ($form_state['triggering_element']['#value'] == 'Back') {
+    return;
+  }
+  switch ($form_state['stage']) { 
+    case 'personal_details': 
+      return  jobs_steps_personal_details_validate($form, $form_state);
+      break;      
+    case 'job_details':  
+      return  job_details_validate($form, $form_state);
+      break;
+    case 'uploadresume':  
+      return  steps_uploadresume_validate($form, $form_state);
+      break;
+    case 'review_resend':  
+      return steps_review_resend_validate($form, $form_state); 
+      break;
   }
 }
 
 /**
  * Form submission handler for jobs_steps_form().
  *
- * @see hook_form_validate()
+ * @see hook_form_submit()
  */
 function jobs_steps_form_submit($form, &$form_state) {
- switch ($form_state['stage']) {
-   case 'review_resend':
-     $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
-     if ($form_state['triggering_element']['#value'] != 'Back') {
+  switch ($form_state['stage']) {
+    case 'review_resend':
+      $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
+      if ($form_state['triggering_element']['#value'] != 'Back') {
        steps_review_resend_submit($form, $form_state);
-     }  
-     break; 
-   default:  
-       $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
-        $form_state['new_stage'] = job_details_move_to_next_stage($form, $form_state);
-   break;
+      }  
+      break; 
+    default:  
+      $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
+      $form_state['new_stage'] = job_details_move_to_next_stage($form, $form_state);
+      break;
  }
- 
  if (isset($form_state['complete'])) {
-     drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
-  }
-
-
-  if ($form_state['triggering_element']['#value'] == 'Back') {
-    $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
-// print_r($form_state['new_stage']);  exit;
-  } 
-
-  if (isset($form_state['multistep_values']['form_build_id'])) {
-    $form_state['values']['form_build_id'] = $form_state['multistep_values']['form_build_id'];
-  }
-  $form_state['multistep_values']['form_build_id'] = $form_state['values']['form_build_id'];
-  $form_state['stage'] = $form_state['new_stage'];
-  $form_state['rebuild'] = TRUE;
+   drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
+ }
+ if ($form_state['triggering_element']['#value'] == 'Back') {
+   $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
+ } 
+ if (isset($form_state['multistep_values']['form_build_id'])) {
+   $form_state['values']['form_build_id'] = $form_state['multistep_values']['form_build_id'];
+ }
+ $form_state['multistep_values']['form_build_id'] = $form_state['values']['form_build_id'];
+ $form_state['stage'] = $form_state['new_stage'];
+ $form_state['rebuild'] = TRUE;
 }
 
 /**
- *
+ * list all jobs applicant details
  * 
  */
 
@@ -301,15 +294,15 @@ function jobs_recieved_applications() {
        l($imgpath->filename, file_create_url($imgpath->uri)));
   }
  return theme('table', array('header' => $header, 'rows' => $rows));
- } else {
+ } 
+ else {
   drupal_set_message(t('No result found'));
 return '';
  }
 }
 
 /**
- *
- * 
+ * resume download handler
  */
 
 function _file_download($file_name) {
@@ -348,8 +341,7 @@ function jobs_theme($existing, $type, $theme, $path) {
 
 
 /**
- *
- * 
+ * fetches the indivaidual applicant node from db
  */  
 
 function applicant_details($applicant_id) {

@@ -1,8 +1,7 @@
 <?php
 /**
  *  @file 
- *  jobs schema content type  and creates jobs content types
- *
+ *  defines jobs schema and creates jobs content types
  */ 
 
 /**
@@ -11,34 +10,32 @@
 function jobs_enable() {
   drupal_install_schema('jobs'); 
   drupal_set_message($message = t('The jobs  module was successfully enabled.'), $type = 'status');
-
-  
   node_types_rebuild();
-/**   module_load_include('inc', 'node', 'content_types');
-  db_update('system')
-    ->condition('name', 'jobs')
-    ->condition('type', 'module')
-    ->fields(array('weight' => -1))
-    ->execute();
-
-// Optionally create the default webform type.
-  if (variable_get('jobs_install_create_content_type', TRUE)) {
-    $jobs_type = array(
-      'type' => 'jobs',
-      'name' => st('Jobs'),
-      'base' => 'node_content',
-      'custom' => TRUE,
-      'modified' => TRUE,
-      'locked' => FALSE,
-    );
-  }
-  node_type_save($jobs_type);
-*/
+/**   
+ * module_load_include('inc', 'node', 'content_types');
+ * db_update('system')
+ *   ->condition('name', 'jobs')
+ *   ->condition('type', 'module')
+ *   ->fields(array('weight' => -1))
+ *   ->execute();
+ * Optionally create the default webform type.
+ * if (variable_get('jobs_install_create_content_type', TRUE)) {
+ *   $jobs_type = array(
+ *     'type' => 'jobs',
+ *     'name' => st('Jobs'),
+ *     'base' => 'node_content',
+ *     'custom' => TRUE,
+ *     'modified' => TRUE,
+ *     'locked' => FALSE,
+ *   );
+ * }
+ * node_type_save($jobs_type);
+ */
   $types = node_type_get_types();
-  /**
-  $instance = field_info_instance('node', 'body', 'jobs'); 
-  field_delete_instance($instance);
-  */
+/**
+ * $instance = field_info_instance('node', 'body', 'jobs'); 
+ * field_delete_instance($instance);
+ */
   foreach (_jobs_installed_fields() as $field) {
     field_create_field($field);
   }
@@ -46,7 +43,6 @@ function jobs_enable() {
   foreach (_jobs_installed_instances() as $instance) {
     field_create_instance($instance);
   }
-//  drupal_install_schema('jobs'); 
 }
 
 /**
@@ -56,21 +52,29 @@ function jobs_disable() {
   drupal_uninstall_schema('jobs');  
   drupal_set_message($message = t('The jobs  module was successfully disabled.'), $type = 'status'); 
   $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
-  $result = db_query($sql, array(':type' => 'jobs'));
+  $result = db_query($sql, array(
+    ':type' => 'jobs'
+    ));
   $nids = array();
   foreach ($result as $row) {
     $nids[] = $row->nid;
   }
   node_delete_multiple($nids);
-  $instance = array('field_name' => 'comment_body', 'bundle' => 'comment_node_jobs', 'entity_type' => 'comment');
+  $instance = array(
+    'field_name' => 'comment_body', 
+    'bundle' => 'comment_node_jobs', 
+    'entity_type' => 'comment'
+  );
   field_delete_instance($instance);
- 
-  $instance = array('field_name' => 'body', 'bundle' => 'jobs', 'entity_type' => 'node');
+  $instance = array(
+   'field_name' => 'body', 
+   'bundle' => 'jobs', 
+   'entity_type' => 'node'
+  );
   field_delete_instance($instance);
- 
-   $fields = array_keys(_jobs_installed_fields());
-   foreach ($fields as $field) {
-      field_delete_field($field);
+  $fields = array_keys(_jobs_installed_fields());
+  foreach ($fields as $field) {
+    field_delete_field($field);
   }
   node_type_delete('jobs');
   field_purge_batch(1000);
@@ -79,9 +83,9 @@ function jobs_disable() {
 
 
 /**
- *
- * 
+ * Create the fields on jobs content type 
  */
+
 function _jobs_installed_fields() {
  $t = get_t();
   return array(
@@ -127,7 +131,7 @@ function _jobs_installed_fields() {
  
  
 /**
- * 
+ * Create the instance on jobs content type 
  */
 
 function _jobs_installed_instances() {
@@ -228,50 +232,136 @@ function _jobs_installed_instances() {
  */
 
 function jobs_schema() {
-
   $schema['jobs'] = array(
     'description' => 'jobs applicant table', 
-    'fields'    => array(
-    'aplicant_id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE), 
-    'job_id'       => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
-    'first_name'       => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE, 'default' => 0),
-    'last_name'      => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE, 'default' => ''),
-    'date_of_birth'  => array(  'type' => 'varchar', 'mysql_type' => 'datetime', 'not null' => FALSE),
-    'mobile'     => array('type' => 'varchar', 'length' => 10, 'not null' => TRUE, 'default' => ''),
-    'name_of_the_institution'       => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
-    'qualification'    => array('type' => 'varchar', 'length' => 100, 'not null' => FALSE, 'default' => ''),
-    'fixed_compensation'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-    'variable_compensation'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-    'current_location'   => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
-    'permanent_location'   => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
-    'company'  => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
-    'years_of_experience'    => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-    'notice_period' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-    'current_role'      => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
-    'candidate_ex_employee_check' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-    'resume' =>  array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-    'cover_letter' =>  array('type' => 'text', 'not null' => TRUE),
-    'email' =>  array('type' => 'varchar', 'length' => 255, 'not null' => FALSE, 'default' => ''),
+    'fields' => array(
+      'aplicant_id' => array(
+        'type' => 'serial', 
+        'unsigned' => TRUE, 
+        'not null' => TRUE
+      ), 
+      'job_id' => array(
+        'type' => 'int', 
+        'unsigned' => TRUE, 
+        'not null' => TRUE
+      ),
+      'first_name' => array(
+        'type' => 'varchar', 
+        'length' => 40, 
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'last_name' => array(
+        'type' => 'varchar', 
+        'length' => 40, 
+        'not null' => TRUE, 
+        'default' => ''
+      ),
+      'date_of_birth' => array(
+        'type' => 'varchar', 
+        'mysql_type' => 'datetime', 
+        'not null' => FALSE
+      ),
+      'mobile' => array(
+        'type' => 'varchar', 
+        'length' => 10, 
+        'not null' => TRUE, 
+        'default' => ''
+      ),
+      'name_of_the_institution' => array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'default' => ''
+      ),
+      'qualification' => array(
+        'type' => 'varchar', 
+        'length' => 100, 
+        'not null' => FALSE, 
+        'default' => ''
+      ),
+      'fixed_compensation' => array(
+        'type' => 'int', 
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'variable_compensation'   => array(
+        'type' => 'int', 
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'current_location'   => array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'default' => ''
+      ),
+      'permanent_location' => array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'default' => ''
+      ),
+      'company' => array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'default' => ''
+      ),
+      'years_of_experience'    => array(
+        'type' => 'int', 
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'notice_period' => array(
+        'type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'current_role' => array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'default' => ''
+      ),
+      'candidate_ex_employee_check' => array(
+        'type' => 'int', 
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'resume' => array(
+        'type' => 'int', 
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'cover_letter' =>  array(
+        'type' => 'text', 
+        'not null' => TRUE
+      ),
+      'email' => array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'default' => ''
+     ),
   ),
 /**  
- 'indexes' => array( 
-     
-  ),
-*/
-/**  'unique keys' => array(
-    'vid' => array('vid'),
-  ),
-*/
- 'foreign keys' => array(
+ * 'indexes' => array(),
+ * 'unique keys' => array(
+ *   'vid' => array('vid'),
+ *),
+ */
+  'foreign keys' => array(
     'jobid' => array(
       'table' => 'node',
-      'columns' => array('job_id' => 'nid'),
-     ),
+      'columns' => array(
+        'job_id' => 'nid'
+      ),
+    ),
     'fid' => array(
       'table' => 'file_managed',
-      'columns' => array('resume' => 'fid'),
+      'columns' => array(
+        'resume' => 'fid'
+      ),
     ),
-   ),
+  ),
   'primary key' => array('aplicant_id'),  
   );
  return $schema;
