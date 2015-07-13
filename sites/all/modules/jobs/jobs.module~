@@ -1,11 +1,20 @@
 <?php
 /**
  * @file
- *  
+ * jobs content type information  
+ * jobs multistep form module 
  *
- */ 
+ */
 
-// node information
+module_load_include('inc', 'jobs', 'includes/jobs_form_validate');
+module_load_include('inc', 'jobs', 'includes/jobs_review_resend_form');
+module_load_include('inc', 'jobs', 'includes/jobs_review_resend_submit');
+
+/**
+ *
+ * Implements hook_node_info();
+ *
+ */
 
 function jobs_node_info() {
   return array(
@@ -19,10 +28,20 @@ function jobs_node_info() {
   );
 }
 
-// list job type in content type
+/**
+ *
+ * Implements hook_form();
+ *
+ */
 function jobs_form($node, $form_state) {
   return node_content_form($node, $form_state);
 }
+
+/**
+ *
+ * Implements hook_views_api();
+ *
+ */
 
 function jobs_views_api() {
   return array(
@@ -32,7 +51,19 @@ function jobs_views_api() {
   );
 }
 
-// registering path
+/**
+ * Page callback: renders a form .
+ *
+ * @param string jobid
+ * 
+ *   job id of a respective job .
+ *
+ * @return array
+ *   A render array for a jobs multistep form.
+ *
+ * @see node_menu()
+ */
+
 function jobs_menu() {
   $items = array();
   $items['apply/jobid/%'] = array(
@@ -40,6 +71,7 @@ function jobs_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('jobs_steps_form', (2)),
     'access arguments' => array('access content'),
+    'file' => 'includes/jobs_form.inc',
     'type' => MENU_NORMAL_ITEM,
   );
   $items['recieved_applications'] = array(
@@ -71,16 +103,25 @@ function jobs_menu() {
 }
 
 /**
+ * Form constructor for the multi step form.
  *
- * intially $form_state['stage'] = 'personal_details' is set as stage  
+ * @param array $form
+ *    form elements to dispaly .
+ * 
+ * @param array $form_state
+ *    The form state array  .
  *
+ * @see hook_form()
+ * @see hook_form_validate()
+ * @see hook_form_submit()
+ *
+ * @ingroup forms
  */
+
 function jobs_steps_form($form, &$form_state) {
-// echo '<pre>'; print_r($form_state);  exit;
 if (!isset($form_state['stage'])) $form_state['stage'] = 'personal_details';
   $form = array();
   $form = jobs_steps_navigation($form, $form_state);
-// print_r($form_state['stage']);  exit;
   switch ($form_state['stage']) { 
    case 'personal_details': 
      return  jobs_steps_personal_details($form, $form_state);
@@ -95,12 +136,14 @@ if (!isset($form_state['stage'])) $form_state['stage'] = 'personal_details';
      return steps_review_resend_form($form, $form_state); 
      break;
   }
- // return $form; 
 }
 
-// Navigating the form when 'next' button is pressed
+/**
+ *
+ * 
+ */
+
 function job_details_move_to_next_stage($form, &$form_state) {
-// print_r($form_state);  exit;
   switch ($form_state['stage']) {
     case 'personal_details':
       return 'job_details';
@@ -113,9 +156,12 @@ function job_details_move_to_next_stage($form, &$form_state) {
   }
 }
 
-// Navigating the form when 'back' button is pressed 
+/**
+ *
+ * 
+ */
+
 function job_details_move_to_previous_stage($form, &$form_state) {
-//print_r($form_state['stage']);  exit;
   switch ($form_state['stage']) {
     case 'job_details':
       return 'personal_details';
@@ -129,7 +175,12 @@ function job_details_move_to_previous_stage($form, &$form_state) {
   }
 
 }
-// breadcrumb
+
+/**
+ *
+ * 
+ */
+
 function jobs_steps_navigation($form, &$form_state) {
  $form_state['stage'] = isset($form_state['stage']) ? $form_state['stage']:'personal_details';
     $form_stages = array(
@@ -162,292 +213,18 @@ function jobs_steps_navigation($form, &$form_state) {
 
 return $form;
 }
-// first step in multistep form 
-function jobs_steps_personal_details($form, &$form_state) {
-// echo '<pre>';print_r($form_state);  exit;
- $values = isset($form_state['multistep_values']['personal_details']) ? $form_state['multistep_values']['personal_details'] : array();
-
- $form['some_text'] = array(
-  '#markup' => '<p>All fields marked with <span class="red">*</span> are mandatory</p>'
- );
-
- $form['personal_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' => 'Personal Details',
- );
-
- $form['first_name'] = array(
-   '#prefix' => '<div class="container-inline">',
-   '#type' => 'textfield', 
-   '#title' =>  'First name',
-   '#size' => 45,
-   '#maxlength' => 45,
-   '#required' => TRUE,
-   '#suffix' => '</div>',
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['first_name']) ? $form_state['multistep_values']['personal_details']['first_name'] : '',
- );
-
- $form['last_name'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Last name',
-   '#size' => 45,
-   '#required' => TRUE,
-   '#maxlength' => 45,
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['last_name']) ? $form_state['multistep_values']['personal_details']['last_name'] : '',
- );
-
- $form['email'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Email',
-   '#size' => 60,
-   '#required' => TRUE,
-   '#autocomplete_path' => FALSE,
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['email']) ? $form_state['multistep_values']['personal_details']['email'] : '',
-   '#element_validate' => array('jobs_email_element_validate'),
- );
-
-
- $form['date_of_birth'] = array(
-   '#type' => 'datepicker',
-  '#date_format' => 'd/m/Y', 
-   '#title' =>  'Date of birth',
-   '#required' => TRUE,
-   '#size' => 50,
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['date_of_birth']) ? $form_state['multistep_values']['personal_details']['date_of_birth'] : '',
- );
 
 /**
- $form['country_code'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'country_code'),
-   '#size' => 10,
-   '#maxlength' => 10,
-   '#required' => TRUE,
- );
-*/
- $form['mobile'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Mobile',
-   '#size' => 10,
-   '#maxlength' => 10,
-   '#required' => TRUE,
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['mobile']) ? $form_state['multistep_values']['personal_details']['mobile'] : '',
- );
+ * Form validation handler for jobs_steps_form().
+ *
+ * @see user_login_form_validate()
+ */
 
-
- $form['institution_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Institution Details',
- );
-
-
- $form['name_of_the_institution'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Name of the institution',
-   '#required' => TRUE,
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['name_of_the_institution']) ? $form_state['multistep_values']['personal_details']['name_of_the_institution'] : '',
- );
-
- $form['qualification'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'qualification',
-   '#size' => 60,
-   '#required' => TRUE,
-   '#default_value' => isset($form_state['multistep_values']['personal_details']['qualification']) ? $form_state['multistep_values']['personal_details']['qualification'] : '',
- );
-
-// $form_state['stage'] = 'job_details';
-
- $form['next'] = array(
-   '#type' => 'submit',
-   '#value' => t('next'),
-//   '#submit' => array('job_details_form'),
- );
- 
-  return $form; 
-}
-
-// email element validation
-function jobs_email_element_validate($element, &$form_state, $form) {
-  if (!valid_email_address($element['#value'])) {
-    form_error($element, t('Please enter a valid email address.'));
-  }
-}
-
-// second step in multistep form
-function job_details_form($form, &$form_state) {
-// $form = array();
-// echo '<pre>';print_r($form_state);  exit;
- $values = isset($form_state['multistep_values']['job_details']) ? $form_state['multistep_values']['job_details'] : array();
-
-// echo 'hai'; exit;
- $form['compensation_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Compensation Details',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-
- $form['fixed_compensation'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Fixed Compensation',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['fixed_compensation']) ? $form_state['multistep_values']['job_details']['fixed_compensation'] : '',
- );
-
- $form['variable_compensation'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Variable Compensation',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['variable_compensation']) ? $form_state['multistep_values']['job_details']['variable_compensation'] : '',
- );
-
-
-
- $form['Location Details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Location Details',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
- $form['current_location'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Current Location',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['current_location']) ? $form_state['multistep_values']['job_details']['current_location'] : '',
- );
-
- $form['permanent_location'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Permanent Location',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['permanent_location']) ? $form_state['multistep_values']['job_details']['permanent_location'] : '',
- );
-
-
-$form['current_role_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Current Role Details',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-$form['company'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Company',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['company']) ? $form_state['multistep_values']['job_details']['company']  : '',
- );
-
- $form['years_of_experience'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Years of Experience',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['years_of_experience']) ? $form_state['multistep_values']['job_details']['years_of_experience'] : '',
- );
-
- $form['current_role'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Current Role',
-   '#default_value' => isset($form_state['multistep_values']['job_details']['current_role']) ? $form_state['multistep_values']['job_details']['current_role'] : '',
- );
-
- $form['notice_period'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'notice period',
-   '#suffix' => t('no of days'),
-   '#size' => 2,
-   '#maxlength' => 2,
-   '#default_value' => isset($form_state['multistep_values']['job_details']['notice_period']) ? $form_state['multistep_values']['job_details']['notice_period'] : '',
- );
-
-
-
- $form['other_information'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Other Information',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-
- $form['candidate_ex_employee_check'] = array(
-   '#type' => 'checkbox', 
-   '#title' =>  'candidate_ex_employee_check',
-   '#default_value' => 1,
- );
-// $form_state['stage'] = 'uploadresume_form';
-
- $form['back'] = array(
-   '#type' => 'submit',
-   '#value' => t('Back'),
-//   '#submit' => array('job_details_form'),
- );
-
-
- $form['next'] = array(
-   '#type' => 'submit',
-   '#value' => t('Next'),
-//   '#submit' => array('steps_uploadresume_form'),
- );
-
-return $form;
-}
-
-// 3rd step in multistep form
-function steps_uploadresume_form($form, &$form_state) {
-
-$values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['multistep_values']['uploadresume'] : array();
-
- $form['captcha'] = array(
-  '#type' => 'captcha',
-  '#captcha_type' => 'image_captcha/Image',
-);
-
-
- $form['resume'] = array(
-   '#type' => 'managed_file', 
-   '#title' =>  'Upload your resume',
-   '#description'  => t('it will accept .txt, .pdf, .doc and size should be less then 2 MB'), 
-   '#upload_location'    => "public://resume/",
-   '#upload_validators' => array(
-     'file_validate_extensions' => array('txt pdf doc docx'),
-     'file_validate_size' => array(1024*1024*2),   
-   ),    
-   '#required' => TRUE,
-   '#default_value' => isset($form_state['multistep_values']['uploadresume']['resume']) ? $form_state['multistep_values']['uploadresume']['resume'] : '',
- );
-
-
- $form['cover_letter'] = array(
-   '#type' => 'textarea', 
-   '#title' =>  'Cover Letter',
-   '#default_value' => isset($form_state['multistep_values']['uploadresume']['cover_letter']) ? $form_state['multistep_values']['uploadresume']['cover_letter'] : '',
- );
-
-// $form_state['stage'] = 'review_resend_form';
-
- $form['back'] = array(
-   '#type' => 'submit',
-   '#value' => t('Back'),
-//   '#submit' => array('jobs_steps_personal_details_form'),
- );
-
-
- $form['next'] = array(
-   '#type' => 'submit',
-   '#value' => t('Next'),
-//   '#submit' => array('steps_review_resend_form'),
- );
-
- return $form;
-}
-
-// validate data based on each step 
 function jobs_steps_form_validate($form, &$form_state) {
-// print_r($form_state); exit; 
- if ($form_state['triggering_element']['#value'] == 'Back') {
-
+if ($form_state['triggering_element']['#value'] == 'Back') {
    return;
  }
-// print_r($form_state['stage']);  exit;
-  switch ($form_state['stage']) { 
+   switch ($form_state['stage']) { 
    case 'personal_details': 
      return  jobs_steps_personal_details_validate($form, $form_state);
      break;      
@@ -463,243 +240,12 @@ function jobs_steps_form_validate($form, &$form_state) {
   }
 }
 
-// validate form data after first step submission
-function jobs_steps_personal_details_validate($form, &$form_state) {
-   if (!isset($form_state['values']['first_name'])  || ($form_state['values']['first_name'] == '') || 
-(!ctype_alpha($form_state['values']['first_name'])) || (strlen($form_state['values']['first_name']) > 40)) {
-       form_set_error($form_state['values']['first_name'], t('First name is required and should have only alpha characters and less than 40 characters!'));   
-   }
-   if (!isset($form_state['values']['last_name'])  || ($form_state['values']['last_name'] == '') || 
-(!ctype_alpha($form_state['values']['last_name'])) || (strlen($form_state['values']['last_name']) > 40)) {
-       form_set_error($form_state['values']['last_name'], t('Last name is required and should have only alpha characters and less than 40 characters!'));   
-   }
-   if (!isset($form_state['values']['date_of_birth'])  || ($form_state['values']['date_of_birth'] == '') ) {
-       form_set_error($form_state['values']['first_name'], t('Date of birth field is required'));   
-   }
-
-   if (!isset($form_state['values']['mobile'])  || ($form_state['values']['mobile'] == '') || 
-(!ctype_digit($form_state['values']['mobile'])) || (strlen($form_state['values']['mobile']) > 10)) {
-       form_set_error($form_state['values']['mobile'], t('mobile number is required and should have only numbers!'));   
-   }
-
-// echo $form_state['values']['name_of_the_institution'];   exit;
-   if (!isset($form_state['values']['name_of_the_institution'])  || ($form_state['values']['name_of_the_institution'] == '')) {
-       form_set_error($form_state['values']['name_of_the_institution'], t('Name of the institution is required and should have only alpha characters!'));   
-   }      
-   if (!isset($form_state['values']['qualification'])  || ($form_state['values']['qualification'] == '')) {
-       form_set_error($form_state['values']['qualification'], t('qualification is required and should have only alpha characters!'));   
-   }      
-}
-
-// validate form after 2nd step 
-function job_details_validate($form, &$form_state) {
-  if (!isset($form_state['values']['fixed_compensation']) || (!ctype_digit($form_state['values']['fixed_compensation'])) || (strlen($form_state['values']['fixed_compensation']) > 5)) {
-       form_set_error($form_state['values']['fixed_compensation'], t('Fixed compensation should have only numbers and  less than 5 digits!'));   
-   }
-   if (!isset($form_state['values']['variable_compensation']) || 
-(!ctype_digit($form_state['values']['variable_compensation'])) || (strlen($form_state['values']['variable_compensation']) > 5)) {
-       form_set_error($form_state['values']['variable_compensation'], t('Variable compensation should have only numbers and  less than 5 digits!'));   
-   }
-   if (!isset($form_state['values']['current_location'])  || (strlen($form_state['values']['current_location']) > 250) ) {
-       form_set_error($form_state['values']['current_location'], t('current location  less than 250 characters'));   
-   }
-   if (!isset($form_state['values']['company']) || (strlen($form_state['values']['company']) > 100)) {
-       form_set_error($form_state['values']['company'], t('mobile number is required and should have only numbers!'));   
-   }
-   if ( !isset($form_state['values']['years_of_experience'])  || (!ctype_digit($form_state['values']['years_of_experience']))
-|| (strlen($form_state['values']['years_of_experience']) > 2) || ($form_state['values']['years_of_experience'] > 60 ) ) {
-       form_set_error($form_state['values']['years_of_experience'], t('years_of_experience should be numbers and less than 60 years!'));   
-   } 
-
-   if ( !isset($form_state['values']['notice_period'])  || (!ctype_digit($form_state['values']['notice_period']))
-|| (strlen($form_state['values']['notice_period']) > 2) || ($form_state['values']['notice_period'] > 60 ) ) {
-       form_set_error($form_state['values']['notice_period'], t('notice period should be numbers and less than 60 days!'));   
-   }      
-}
-
-// validate all form data after submission of form in 3rd step
-function steps_uploadresume_validate($form, &$form_state) {
-//  echo '<pre>'; print_r($form_state); exit;
-  if (!isset($form_state['values']['cover_letter']) || ($form_state['values']['cover_letter'] == '') || 
-(strlen($form_state['values']['cover_letter']) <  20 )) {
-    form_set_error($form_state['values']['cover_letter'], t('Cover letter is required minimum 20 letters')); 
-  }
-}
-
-// validate all form data after submission of form in 4th step
-function steps_review_resend_validate($form, &$form_state) {
-   if (!isset($form_state['values']['first_name'])  || ($form_state['values']['first_name'] == '') || 
-(!ctype_alpha($form_state['values']['first_name'])) || (strlen($form_state['values']['first_name']) > 40)) {
-       form_set_error($form_state['values']['first_name'], t('First name is required and should have only alpha characters and less than 40 characters!'));   
-   }
-   if (!isset($form_state['values']['last_name'])  || ($form_state['values']['last_name'] == '') || 
-(!ctype_alpha($form_state['values']['last_name'])) || (strlen($form_state['values']['last_name']) > 40)) {
-       form_set_error($form_state['values']['last_name'], t('Last name is required and should have only alpha characters and less than 40 characters!'));   
-   }
-   if (!isset($form_state['values']['date_of_birth'])  || ($form_state['values']['date_of_birth'] == '') ) {
-       form_set_error($form_state['values']['first_name'], t('Date of birth field is required'));   
-   }
-
-   if (!isset($form_state['values']['mobile'])  || ($form_state['values']['mobile'] == '') || 
-(!ctype_digit($form_state['values']['mobile'])) || (strlen($form_state['values']['mobile']) > 10)) {
-       form_set_error($form_state['values']['mobile'], t('mobile number is required and should have only numbers!'));   
-   }
-
-// echo $form_state['values']['name_of_the_institution'];   exit;
-   if (!isset($form_state['values']['name_of_the_institution'])  || ($form_state['values']['name_of_the_institution'] == '')) {
-       form_set_error($form_state['values']['name_of_the_institution'], t('Name of the institution is required and should have only alpha characters!'));   
-   }      
-   if (!isset($form_state['values']['qualification'])  || ($form_state['values']['qualification'] == '')) {
-       form_set_error($form_state['values']['qualification'], t('qualification is required and should have only alpha characters!'));   
-   }
-
-if (!isset($form_state['values']['fixed_compensation']) || (!ctype_digit($form_state['values']['fixed_compensation'])) || (strlen($form_state['values']['fixed_compensation']) > 5)) {
-       form_set_error($form_state['values']['fixed_compensation'], t('Fixed compensation should have only numbers and  less than 5 digits!'));   
-   }
-   if (!isset($form_state['values']['variable_compensation']) || 
-(!ctype_digit($form_state['values']['variable_compensation'])) || (strlen($form_state['values']['variable_compensation']) > 5)) {
-       form_set_error($form_state['values']['variable_compensation'], t('Variable compensation should have only numbers and  less than 5 digits!'));   
-   }
-   if (!isset($form_state['values']['current_location'])  || (strlen($form_state['values']['current_location']) > 250) ) {
-       form_set_error($form_state['values']['current_location'], t('current location  less than 250 characters'));   
-   }
-   if (!isset($form_state['values']['company']) || (strlen($form_state['values']['company']) > 100)) {
-       form_set_error($form_state['values']['company'], t('mobile number is required and should have only numbers!'));   
-   }
-   if ( !isset($form_state['values']['years_of_experience'])  || (!ctype_digit($form_state['values']['years_of_experience']))
-|| (strlen($form_state['values']['years_of_experience']) > 2) || ($form_state['values']['years_of_experience'] > 60 ) ) {
-       form_set_error($form_state['values']['years_of_experience'], t('years_of_experience should be numbers and less than 60 years!'));   
-   } 
-
-  if (!isset($form_state['values']['cover_letter']) || ($form_state['values']['cover_letter'] == '') || 
-(strlen($form_state['values']['cover_letter']) <  20 )) {
-    form_set_error($form_state['values']['cover_letter'], t('Cover letter is required minimum 20 letters')); 
-  }
-
-   if ( !isset($form_state['values']['notice_period'])  || (!ctype_digit($form_state['values']['notice_period']))
-|| (strlen($form_state['values']['notice_period']) > 2) || ($form_state['values']['notice_period'] > 60 ) ) {
-       form_set_error($form_state['values']['notice_period'], t('notice period should be numbers and less than 60 days!'));   
-   }
-}
-
-
-// saving form data to db
-function steps_review_resend_submit($form, &$form_state) {
-// echo '<pre>'; print_r($form_state['values']);  exit;  
-
-
-
-$fields = array();
-
-if(isset($form_state['build_info']['args']['0'])) {
-$fields['job_id'] = $form_state['build_info']['args']['0'];
-
-// echo $fields['job_id'];  exit; 
-$job_exist = db_select('node', 'n')
-             ->fields('n')
-             ->condition('nid', $fields['job_id'], '=')
-             ->execute()
-             ->fetchAll();
-
-if (isset($job_exist) && !empty($job_exist)) {
- 
-if(isset($form_state['values']['first_name']))
-$fields['first_name'] = $form_state['values']['first_name'];
-
-if(isset($form_state['values']['last_name']))
-$fields['last_name'] = $form_state['values']['last_name'];
-
-if(isset($form_state['values']['email']))
-$fields['email'] = $form_state['values']['email'];
-
-if(isset($form_state['values']['date_of_birth']))
-$fields['date_of_birth'] = $form_state['values']['date_of_birth'];
-//$fields['date_of_birth'] = date_convert( $form_state['values']['date_of_birth'], DATE_ISO, DATE_UNIX);
-
-// date_convert($timestamp, DATE_UNIX, DATE_ISO);
-
-if(isset($form_state['values']['mobile']))
-$fields['mobile'] = $form_state['values']['mobile'];
-
-if(isset($form_state['values']['name_of_the_institution']))
-$fields['name_of_the_institution'] = $form_state['values']['name_of_the_institution'];
-
-if(isset($form_state['values']['qualification']))
-$fields['qualification'] = $form_state['values']['qualification'];
-
-if(isset($form_state['values']['fixed_compensation']))
-$fields['fixed_compensation'] = $form_state['values']['fixed_compensation'];
-
-if(isset($form_state['values']['variable_compensation']))
-$fields['variable_compensation'] = $form_state['values']['variable_compensation'];
-
-if(isset($form_state['values']['current_location']))
-$fields['current_location'] = $form_state['values']['current_location'];
-
-if(isset($form_state['values']['permanent_location']))
-$fields['permanent_location'] = $form_state['values']['permanent_location'];
-
-
-if(isset($form_state['values']['company']))
-$fields['company'] = $form_state['values']['company'];
-
-if(isset($form_state['values']['years_of_experience']))
-$fields['years_of_experience'] = $form_state['values']['years_of_experience'];
-
-if(isset($form_state['values']['current_role']))
-$fields['current_role'] = $form_state['values']['current_role'];
-
-
-
-
-if(isset($form_state['values']['notice_period']))
-$fields['notice_period'] = $form_state['values']['notice_period'];
-
-
-if(isset($form_state['values']['candidate_ex_employee_check']))
-$fields['candidate_ex_employee_check'] = $form_state['values']['candidate_ex_employee_check'];
-
-if(isset($form_state['values']['years_of_experience']))
-$fields['years_of_experience'] = $form_state['values']['years_of_experience'];
-
-if(isset($form_state['values']['resume']))
-$fields['resume'] = $form_state['values']['resume'];
-
-if(isset($form_state['values']['cover_letter']))
-$fields['cover_letter'] = $form_state['values']['cover_letter'];
-
-// print_r($fields);  exit;
-// $fields  $my_allowed_tags = array('fieldset','legend');
-// filter_xss($some_string, $my_allowed_tags);
-//  https://api.drupal.org/api/drupal/includes!common.inc/group/sanitization/7
-
-if(!form_get_errors()) {
- $transaction = db_transaction();
- try {
- $insert_id = db_insert('jobs') // Table name no longer needs {}
-->fields($fields)
-->execute();
-  } catch (Exception $e) {
-       $transaction->rollback();
-      watchdog_exception('block', $e);
-      throw $e;
-  }
- drupal_set_message(t('form submitted successfully'));   
- $form_state['complete'] = TRUE;
- }
-}
-else {
- drupal_set_message(t('job is not found'));    
-  }
-}
-
-
-}
 /**
- * if the form stage is review_resend then  submit the form else one step up or one step down
+ * Form submission handler for jobs_steps_form().
+ *
+ * @see hook_form_validate()
  */
 function jobs_steps_form_submit($form, &$form_state) {
-//print_r($form_state['triggering_element']['#value']);  exit;
  switch ($form_state['stage']) {
    case 'review_resend':
      $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
@@ -731,239 +277,63 @@ function jobs_steps_form_submit($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-
-// review the submitted data (4th step in multistep)
-function steps_review_resend_form($form, &$form_state) {
-
-// echo '<pre>';  print_r($form_state['values']);  exit;
-// print_r($form_state['multistep_values']['personal_details']['email'] );  exit;
-
-
-$values = isset($form_state['multistep_values']['review_resend']) ? $form_state['multistep_values']['review_resend'] : array();
-
-$form['some_text'] = array(
-  '#markup' => '<p>All fields marked with <span class="red">*</span> are mandatory</p>',
-);
-
- $form['personal_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Personal Details',
- );
-
-if ( isset($form_state['multistep_values']['personal_details']['first_name']))
- $form['first_name'] = array(
-   '#prefix' => '<div class="container-inline">',
-   '#type' => 'textfield', 
-   '#title' =>  'First name',
-   '#size' => 45,
-   '#maxlength' => 45,
-   '#required' => TRUE,
-   '#suffix' => '</div>',
-   '#default_value' => $form_state['multistep_values']['personal_details']['first_name'],
- );
-
-if ( isset($form_state['multistep_values']['personal_details']['last_name']))
- $form['last_name'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Last name',
-   '#size' => 45,
-   '#required' => TRUE,
-   '#maxlength' => 45,
-   '#default_value' => $form_state['multistep_values']['personal_details']['last_name'], 
- );
-
-if ( isset( $form_state['multistep_values']['personal_details']['email'] ))
- $form['email'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Email',
-   '#size' => 60,
-   '#required' => TRUE,
-   '#element_validate' => array('jobs_email_element_validate'),
-   '#default_value' => $form_state['multistep_values']['personal_details']['email'], 
- );
-
-if ( isset( $form_state['multistep_values']['personal_details']['date_of_birth']))
- $form['date_of_birth'] = array(
-   '#type' => 'datepicker',
-   '#date_format' => 'd/m/Y', 
-   '#title' =>  'Date of birth',
-   '#required' => TRUE,
-   '#size' => 50,
-   '#default_value' => $form_state['multistep_values']['personal_details']['date_of_birth'],
- );
-
 /**
- $form['country_code'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'country_code'),
-   '#size' => 10,
-   '#maxlength' => 10,
-   '#required' => TRUE,
- );
-*/
+ *
+ * 
+ */
 
-if ( isset($form_state['multistep_values']['personal_details']['mobile']))
- $form['mobile'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Mobile',
-   '#size' => 10,
-   '#maxlength' => 10,
-   '#required' => TRUE,
-   '#default_value' => $form_state['multistep_values']['personal_details']['mobile'],
- );
-
- $form['institution_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Institution Details',
-
- );
-
-if ( isset($form_state['multistep_values']['personal_details']['name_of_the_institution']))
- $form['name_of_the_institution'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Name of the institution',
-   '#required' => TRUE,
-   '#default_value' => $form_state['multistep_values']['personal_details']['name_of_the_institution'], 
- );
-
-if (isset($form_state['multistep_values']['personal_details']['qualification']))
- $form['qualification'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'qualification',
-   '#size' => 60,
-   '#required' => TRUE,
-   '#default_value' =>  $form_state['multistep_values']['personal_details']['qualification'],
- );
-
- $form['compensation_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Compensation Details',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-if ( isset($form_state['multistep_values']['job_details']['fixed_compensation']))
- $form['fixed_compensation'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Fixed Compensation',
-   '#default_value' => $form_state['multistep_values']['job_details']['fixed_compensation'],
- );
-
-if ( isset($form_state['multistep_values']['job_details']['variable_compensation']))
- $form['variable_compensation'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Variable Compensation',
-   '#default_value' => $form_state['multistep_values']['job_details']['variable_compensation'],
- );
-
-
-$form['Location Details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Location Details',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-if ( isset($form_state['multistep_values']['job_details']['current_location']))
- $form['current_location'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Current Location',
-   '#default_value' => $form_state['multistep_values']['job_details']['current_location'],
- );
-
-if ( isset($form_state['multistep_values']['job_details']['permanent_location']))
- $form['permanent_location'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Permanent Location',
-   '#default_value' => $form_state['multistep_values']['job_details']['permanent_location'], 
- );
-
- $form['current_role_details'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Current Role Details',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-if ( isset($form_state['multistep_values']['job_details']['company']))
- $form['company'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Company',
-   '#default_value' => $form_state['multistep_values']['job_details']['company'], 
- );
-
-if ( isset($form_state['multistep_values']['job_details']['years_of_experience']))
- $form['years_of_experience'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Years of Experience',
-   '#default_value' => $form_state['multistep_values']['job_details']['years_of_experience'], 
- );
-
-if ( isset($form_state['multistep_values']['job_details']['current_role']))
- $form['current_role'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'Current Role',
-   '#default_value' => $form_state['multistep_values']['job_details']['current_role'], 
- );
-
-if (isset($form_state['multistep_values']['job_details']['notice_period']))
- $form['notice_period'] = array(
-   '#type' => 'textfield', 
-   '#title' =>  'notice period',
-   '#suffix' => t('no of days'),
-   '#size' => 2, 
-   '#maxlength' => 2,
-   '#default_value' => $form_state['multistep_values']['job_details']['notice_period'], 
- );
-
-$form['other_information'] = array(
-   '#type' => 'fieldset', 
-   '#title' =>  'Other Information',
-   '#collapsible' => FALSE, 
-   '#collapsed' => FALSE,
- );
-
-if ( isset($form_state['multistep_values']['job_details']['candidate_ex_employee_check']))
- $form['candidate_ex_employee_check'] = array(
-   '#type' => 'checkbox', 
-   '#title' =>  'candidate_ex_employee_check',
-   '#default_value' => $form_state['multistep_values']['job_details']['candidate_ex_employee_check'],
- );
-
- 
-
-if ( isset($form_state['multistep_values']['uploadresume']['resume']))
-  $form['resume'] = array(
-   '#type' => 'managed_file', 
-   '#title' =>  'Upload your resume',
-   '#description'  => t('it will accept .txt, .pdf, .doc and size should be less then 2 MB'),
-   '#default_value' => $form_state['multistep_values']['uploadresume']['resume'],   
-   '#upload_location'    => "public://resume/",
-   '#upload_validators' => array(
-     'file_validate_extensions' => array('txt pdf doc docx'),
-     'file_validate_size' => array(1024*1024*2),   
-   ),
-   '#required' => TRUE,
- );
-
-
-if ( isset($form_state['multistep_values']['uploadresume']['cover_letter']))
- $form['cover_letter'] = array(
-   '#type' => 'textarea', 
-   '#title' =>  'Cover Letter',
-   '#default_value' => $form_state['multistep_values']['uploadresume']['cover_letter'], 
- );
-
-// $form_state['stage'] == 'uploadresume_form';
-
-$form['submit'] = array(
-   '#type' => 'submit', 
-   '#value' => t('submit'),
-);
-return $form;
+function jobs_recieved_applications() {
+  $result = db_select('jobs', 'j');
+  $result->join('node', 'n', 'j.job_id = n.nid');
+  $result->fields('n', array('title', 'nid'))
+     ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'mobile', 'resume'));
+   $query = $result->execute()->fetchAll();
+  $header = array('job title', ' Name',  'Mobile', 'resume' );
+  $rows = array();
+ if (isset($query) && !empty($query)) {
+  foreach ($query as $key => $value) {
+     if (isset($value->resume) && !empty($value->resume))
+     $imgpath = file_load($value->resume);
+     $rows[] = array(
+       '<a href=' . base_path() . 'node/' . $value->nid . '> ' . $value->title . '<a>',
+     '<a href=' . base_path() . 'applicant_details/' . base64_encode($value->aplicant_id) . '> ' . $value->first_name . ' ' . $value->last_name . '</a>', 
+       $value->mobile, 
+       l($imgpath->filename, file_create_url($imgpath->uri)));
+  }
+ return theme('table', array('header' => $header, 'rows' => $rows));
+ } else {
+  drupal_set_message(t('No result found'));
+return '';
+ }
 }
 
-//  implementing hook_theme
+/**
+ *
+ * 
+ */
+
+function _file_download($file_name) {
+  header("Cache-Control: public");
+  header("Content-Type: application/octet-stream");
+  header("Cache-Control: no-store, no-cache, must-revalidate");
+  header("Cache-Control: post-check=0, pre-check=0");
+  header('Content-Disposition: attachment; filename="' . $file_name . '";');
+  header("Content-Transfer-Encoding: binary");
+  readfile($file_name);
+  drupal_exit();
+}
+
+
+
+/**
+ * Returns HTML for a applicant.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - content: The foo object that is being formatted.
+ *
+ * @ingroup themeable
+ */
 
 function jobs_theme($existing, $type, $theme, $path) {
   $theme = array();
@@ -976,56 +346,19 @@ function jobs_theme($existing, $type, $theme, $path) {
   return $theme;
 }
 
-// All recieved applications
 
-function jobs_recieved_applications() {
-  $result = db_select('jobs', 'j');
-  $result->join('node', 'n', 'j.job_id = n.nid');
-  $result->fields('n', array('title', 'nid'))
-     ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'mobile', 'resume'));
+/**
+ *
+ * 
+ */  
 
-   $query = $result->execute()->fetchAll();
- // return theme('applicant_listing', array('applicants' => $result, ));
-//print_r($query);  exit;
-  $header = array('job title', ' Name',  'Mobile', 'resume' );
-  $rows = array();
- if (isset($query) && !empty($query)) {
-  foreach ($query as $key => $value) {
-     if (isset($value->resume) && !empty($value->resume))
-     $imgpath = file_load($value->resume);
-     $rows[] = array(
-       '<a href=' . base_path() . 'node/' . $value->nid . '> ' . $value->title . '<a>',
-     '<a href=' . base_path() . 'applicant_details/' . $value->aplicant_id . '> ' . $value->first_name . ' ' . $value->last_name . '</a>', 
-       $value->mobile, 
-       l($imgpath->filename, file_create_url($imgpath->uri)));
-  }
- return theme('table', array('header' => $header, 'rows' => $rows));
- } else {
-  drupal_set_message(t('No result found'));
-return '';
- }
-}
-// resume download 
-function _file_download($file_name) {
-  header("Cache-Control: public");
-  header("Content-Type: application/octet-stream");
-  header("Cache-Control: no-store, no-cache, must-revalidate");
-  header("Cache-Control: post-check=0, pre-check=0");
-  header('Content-Disposition: attachment; filename="' . $file_name . '";');
-  header("Content-Transfer-Encoding: binary");
-  readfile($file_name);
-  drupal_exit();
-}
-
-// To fetch individual node
 function applicant_details($applicant_id) {
   $result = db_select('jobs', 'j');
   $result->join('node', 'n', 'j.job_id = n.nid');
   $result->fields('n', array('title', 'nid'))
      ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'date_of_birth', 'mobile', 'name_of_the_institution', 'qualification', 'fixed_compensation', 'variable_compensation', 'current_location', 'permanent_location', 'company', 'years_of_experience', 'notice_period', 'current_role', 'candidate_ex_employee_check', 'resume', 'cover_letter'))
-     ->condition('j.aplicant_id', $applicant_id, '=');
+     ->condition('j.aplicant_id', base64_decode($applicant_id), '=');
  $query = $result->execute()->fetchAll();
-
-// print_r();  exit; 
  return theme('applicant_listing', array('result' => $query));
 }
+

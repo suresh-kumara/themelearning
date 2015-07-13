@@ -1,10 +1,14 @@
 <?php
 /**
  * @file
- * Returns the HTML for a node.
+ * Returns the HTML for a jobs node.
  *
- * Complete documentation for this file is available online.
- * @see https://drupal.org/node/1728164
+ * Available variables:  
+ * - $content['category']  category of a job
+ * - $content['job_description'] description of a job
+ * - $content['last_date'] lastdate for a job
+ * - $content['last_date']['#object']->last_date['und']['0']['value']  
+ *
  */
 ?>
 <article class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>

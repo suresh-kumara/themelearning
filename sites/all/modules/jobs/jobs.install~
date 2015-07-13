@@ -1,8 +1,14 @@
 <?php
 /**
  *  @file 
- *  jobs schema content type 
+ *  jobs schema content type  and creates jobs content types
+ *
  */ 
+
+/**
+ * 
+ * 
+ */
 function jobs_enable() {
   drupal_install_schema('jobs'); 
   drupal_set_message($message = t('The jobs  module was successfully enabled.'), $type = 'status');
@@ -44,6 +50,10 @@ function jobs_enable() {
 //  drupal_install_schema('jobs'); 
 }
 
+/**
+ *
+ * 
+ */
 function jobs_disable() {
   drupal_uninstall_schema('jobs');  
   drupal_set_message($message = t('The jobs  module was successfully disabled.'), $type = 'status'); 
@@ -53,10 +63,7 @@ function jobs_disable() {
   foreach ($result as $row) {
     $nids[] = $row->nid;
   }
- 
-  // Delete all the nodes at once
   node_delete_multiple($nids);
- 
   $instance = array('field_name' => 'comment_body', 'bundle' => 'comment_node_jobs', 'entity_type' => 'comment');
   field_delete_instance($instance);
  
@@ -67,16 +74,16 @@ function jobs_disable() {
    foreach ($fields as $field) {
       field_delete_field($field);
   }
-
   node_type_delete('jobs');
- 
-  // Purge all field infromation
-   field_purge_batch(1000);
+  field_purge_batch(1000);
 }
 
 
 
- 
+/**
+ *
+ * 
+ */
 function _jobs_installed_fields() {
  $t = get_t();
   return array(
@@ -121,7 +128,10 @@ function _jobs_installed_fields() {
 }
  
  
- 
+/**
+ *
+ * 
+ */
 function _jobs_installed_instances() {
   $t = get_t();
   return array(
@@ -196,8 +206,6 @@ function _jobs_installed_instances() {
       'description' => 'Category',
     ),
 
-
-
    'last_date' => array(
       'field_name' => 'last_date',
       'label'       => $t('The Last date.'),
@@ -216,7 +224,12 @@ function _jobs_installed_instances() {
     ),
   );
 }
- 
+
+/**
+ *
+ * 
+ */
+
 function jobs_schema() {
 
   $schema['jobs'] = array(
