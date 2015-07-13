@@ -220,8 +220,8 @@ return $form;
  */
 
 function jobs_steps_form_validate($form, &$form_state) {
-echo '<pre>'; print_r($form);  exit; 
-  if ($form_state['triggering_element']['#value'] == 'Back') {
+  unset($form['captcha_widgets']);
+  if ($form_state['triggering_eleme-nt']['#value'] == 'Back') {
     unset($form_state['complete form']['captcha']);
     unset($form_state['captcha_info']);
     return;
