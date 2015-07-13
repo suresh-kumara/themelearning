@@ -356,3 +356,13 @@ function applicant_details($applicant_id) {
  return theme('applicant_listing', array('result' => $query));
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function jobs_form_node_form_alter(&$form, &$form_state) {
+echo '<pre>';  print_r($form);  exit;
+  if ($node->type == 'my_custom_type') {
+    $form['title']['#required'] = FALSE;
+  }
+
+}
