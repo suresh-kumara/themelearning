@@ -200,7 +200,6 @@ function steps_uploadresume_form($form, &$form_state) {
     '#type' => 'captcha',
     '#captcha_type' => 'image_captcha/Image',
   );
-
   $form['resume'] = array(
     '#type' => 'managed_file', 
     '#title' => 'Upload your resume',
@@ -218,7 +217,6 @@ function steps_uploadresume_form($form, &$form_state) {
     '#title' =>  'Cover Letter',
     '#default_value' => isset($form_state['multistep_values']['uploadresume']['cover_letter']) ? $form_state['multistep_values']['uploadresume']['cover_letter'] : '',
   );
-
   $form['back'] = array(
     '#type' => 'submit',
     '#value' => t('Back'),
@@ -227,7 +225,6 @@ function steps_uploadresume_form($form, &$form_state) {
     '#type' => 'submit',
     '#value' => t('Next'),
   );
-
   return $form;
 }
 
