@@ -220,7 +220,7 @@ function steps_uploadresume_form($form, &$form_state) {
 
   $form['captcha']['#attached']['js'][] = array(
   'type' => 'inline',
-  'data' => 'jQuery(document).ready(function () { $( "#edit-captcha-response" ).removeClass("required"); });',
+  'data' => 'jQuery(document).ready(function () { jQuery( "#edit-captcha-response" ).removeClass("required"); });',
   'scope' => 'footer',
   'group' => JS_THEME,
   'weight' => 5,
