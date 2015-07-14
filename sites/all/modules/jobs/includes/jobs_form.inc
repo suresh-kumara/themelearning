@@ -178,6 +178,16 @@ function job_details_form($form, &$form_state) {
     '#title' =>  'candidate_ex_employee_check',
     '#default_value' => 1,
   );
+  
+  $form['compensation_details']['#attached']['js'][] = array(
+  'type' => 'inline',
+  'data' => 'jQuery(document).ready(function () { var error_messege = jQuery("div.messages--error").text();
+    if(error_messege === "What code is in the image? field is required.") { jQuery("div.messages--error").hide(); }});',
+  'scope' => 'footer',
+  'group' => JS_THEME,
+  'weight' => 5,
+  );
+
   $form['back'] = array(
     '#type' => 'submit',
     '#value' => t('Back'),
@@ -212,18 +222,11 @@ function steps_uploadresume_form($form, &$form_state) {
     '#default_value' => isset($form_state['multistep_values']['uploadresume']['resume']) ? $form_state['multistep_values']['uploadresume']['resume'] : '',
     '#field_prefix' => '(resume filed is required)',
   );
+
   $form['cover_letter'] = array(
     '#type' => 'textarea', 
     '#title' =>  'Cover Letter',
     '#default_value' => isset($form_state['multistep_values']['uploadresume']['cover_letter']) ? $form_state['multistep_values']['uploadresume']['cover_letter'] : '',
-  );
-
-  $form['captcha']['#attached']['js'][] = array(
-  'type' => 'inline',
-  'data' => 'jQuery(document).ready(function () { jQuery( "#edit-captcha-response" ).removeClass("required"); });',
-  'scope' => 'footer',
-  'group' => JS_THEME,
-  'weight' => 5,
   );
 
   $form['back'] = array(
