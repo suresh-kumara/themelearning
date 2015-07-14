@@ -369,6 +369,9 @@ function jobs_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function jobs_preprocess(&$variables){
-  echo '<pre>'; print_r($variables);  exit; 
+echo '<pre>';print_r($variables['triggering_element']['#value']);  exit; 
+  if (isset($variables['triggering_element']['#value']) && ($variables['triggering_element']['#value'] == 'Back')) {
+      drupal_add_js('jQuery(document).ready(function () { alert("Hello!"); });', 'inline');
+  }
 }
 
