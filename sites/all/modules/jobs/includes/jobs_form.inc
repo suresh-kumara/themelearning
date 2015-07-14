@@ -200,9 +200,14 @@ function steps_uploadresume_form($form, &$form_state) {
     '#type' => 'captcha',
     '#captcha_type' => 'image_captcha/Image',
     '#attached' => array(
-      'js' => 'jQuery("#edit-captcha-response").removeClass("required");',
-      'type' => 'inline',	
-    ),   	
+      'js' = array(
+        'type' => 'inline',
+        'data' => 'jQuery(document).ready(function () { alert("Hello!"); });',
+        'scope' => 'footer',
+        'group' => JS_THEME,
+        'weight' => 5,
+      ),
+    ),
   );
 
   $form['resume'] = array(
@@ -222,6 +227,7 @@ function steps_uploadresume_form($form, &$form_state) {
     '#title' =>  'Cover Letter',
     '#default_value' => isset($form_state['multistep_values']['uploadresume']['cover_letter']) ? $form_state['multistep_values']['uploadresume']['cover_letter'] : '',
   );
+
   $form['back'] = array(
     '#type' => 'submit',
     '#value' => t('Back'),
