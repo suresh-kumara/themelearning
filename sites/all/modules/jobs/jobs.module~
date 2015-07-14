@@ -181,36 +181,35 @@ function job_details_move_to_previous_stage($form, &$form_state) {
  */
 
 function jobs_steps_navigation($form, &$form_state) {
- $form_state['stage'] = isset($form_state['stage']) ? $form_state['stage']:'personal_details';
+  $form_state['stage'] = isset($form_state['stage']) ? $form_state['stage']:'personal_details';
     $form_stages = array(
     'personal_details' => 'personal_details',
     'job_details' => 'job_details',
     'uploadresume' => 'uploadresume',
     'review_resend' => 'review_resend',
   );  
- if (isset($form_stages[$form_state['stage']])) {
-   $current_step = $form_state['stage'];
- } 
- else {
-   $current_step =  'personal_details';
- }
+  if (isset($form_stages[$form_state['stage']])) {
+    $current_step = $form_state['stage'];
+  } 
+  else {
+    $current_step =  'personal_details';
+  }
  
- $stages = array(
-   'personal_details' => array('data' => 'personal_details'),
-   'job_details' => array('data' => 'job_details'),  
-   'uploadresume' => array('data' => 'uploadresume'),
-   'review_resend' => array('data' => 'review_resend'),
- ); 
- $stages[$current_step]['class'] = array('active');
+  $stages = array(
+    'personal_details' => array('data' => 'personal_details'),
+    'job_details' => array('data' => 'job_details'),  
+    'uploadresume' => array('data' => 'uploadresume'),
+    'review_resend' => array('data' => 'review_resend'),
+  ); 
+  $stages[$current_step]['class'] = array('active');
  
- $stages_list = theme('item_list', array('items' => $stages));
- $form['header'] = array(
-   '#type' => 'fieldset',
-   '#title' => 'breadcrumb',
-   '#list' => $stages_list,
- );
-
-return $form;
+  $stages_list = theme('item_list', array('items' => $stages));
+  $form['header'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'breadcrumb',
+    '#list' => $stages_list,
+  );
+  return $form;
 }
 
 /**
