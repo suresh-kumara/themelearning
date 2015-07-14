@@ -246,7 +246,7 @@ function jobs_steps_form_validate($form, &$form_state) {
  * @see hook_form_submit()
  */
 function jobs_steps_form_submit($form, &$form_state) {
-echo '<pre>'; print_r('$form_state');  exit; 
+// echo '<pres>'; print_r('$form_state');  exit; 
   switch ($form_state['stage']) {
     case 'review_resend':
       $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
