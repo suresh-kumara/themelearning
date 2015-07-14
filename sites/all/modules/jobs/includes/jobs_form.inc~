@@ -200,7 +200,7 @@ function steps_uploadresume_form($form, &$form_state) {
     '#type' => 'captcha',
     '#captcha_type' => 'image_captcha/Image',
     '#attached' => array(
-      'js' = array(
+      'js' => array(
         'type' => 'inline',
         'data' => 'jQuery(document).ready(function () { alert("Hello!"); });',
         'scope' => 'footer',
