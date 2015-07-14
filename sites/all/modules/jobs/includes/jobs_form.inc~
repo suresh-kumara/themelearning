@@ -198,7 +198,11 @@ function steps_uploadresume_form($form, &$form_state) {
   $values = isset($form_state['multistep_values']['uploadresume']) ? $form_state['multistep_values']['uploadresume'] : array();
   $form['captcha'] = array(
     '#type' => 'captcha',
-    '#captcha_type' => 'image_captcha/Image',  	
+    '#captcha_type' => 'image_captcha/Image',
+    '#attached' => array(
+      'js' => array('jQuery("#edit-captcha-response").removeClass("required");)',
+      'type' => 'inline',	
+    ),   	
   );
   $form['resume'] = array(
     '#type' => 'managed_file', 
