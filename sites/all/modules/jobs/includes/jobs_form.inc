@@ -182,7 +182,7 @@ function job_details_form($form, &$form_state) {
   $form['compensation_details']['#attached']['js'][] = array(
   'type' => 'inline',
   'data' => 'jQuery(document).ready(function () { alert("hai"); jQuery("div.messages--error > h2").remove(); var error_messege = jQuery("div.messages--error").text(); alert(error_messege.trim());
-    if(error_messege.trim() == "Error message What code is in the image? field is required.") { alert(error_messege); jQuery("div.messages--error").hide(); }});',
+    if(error_messege.trim() == "What code is in the image? field is required.") { alert(error_messege); jQuery("div.messages--error").hide(); }});',
   'scope' => 'footer',
   'group' => JS_THEME,
   'weight' => 5,
