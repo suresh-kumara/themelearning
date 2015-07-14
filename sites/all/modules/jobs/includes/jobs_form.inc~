@@ -200,10 +200,11 @@ function steps_uploadresume_form($form, &$form_state) {
     '#type' => 'captcha',
     '#captcha_type' => 'image_captcha/Image',
     '#attached' => array(
-      'js' => array('jQuery("#edit-captcha-response").removeClass("required");)',
+      'js' => 'jQuery("#edit-captcha-response").removeClass("required");',
       'type' => 'inline',	
     ),   	
   );
+
   $form['resume'] = array(
     '#type' => 'managed_file', 
     '#title' => 'Upload your resume',
