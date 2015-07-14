@@ -104,61 +104,71 @@ function jobs_email_element_validate($element, &$form_state, $form) {
  * Form constructor for job details in a multi step form.
  */
 function job_details_form($form, &$form_state) {
-// echo <pre>; print_r($_SESSION);  exit; 
   $values = isset($form_state['multistep_values']['job_details']) ? $form_state['multistep_values']['job_details'] : array();
+
   $form['compensation_details'] = array(
     '#type' => 'fieldset', 
     '#title' =>  'Compensation Details',
     '#collapsible' => FALSE, 
     '#collapsed' => FALSE,
   );
+
   $form['fixed_compensation'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Fixed Compensation',
     '#default_value' => isset($form_state['multistep_values']['job_details']['fixed_compensation']) ? $form_state['multistep_values']['job_details']['fixed_compensation'] : '',
   );
+
   $form['variable_compensation'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Variable Compensation',
     '#default_value' => isset($form_state['multistep_values']['job_details']['variable_compensation']) ? $form_state['multistep_values']['job_details']['variable_compensation'] : '',
   );
+
   $form['Location Details'] = array(
     '#type' => 'fieldset', 
     '#title' =>  'Location Details',
     '#collapsible' => FALSE, 
     '#collapsed' => FALSE,
   );
+
   $form['current_location'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Current Location',
     '#default_value' => isset($form_state['multistep_values']['job_details']['current_location']) ? $form_state['multistep_values']['job_details']['current_location'] : '',
   );
+
   $form['permanent_location'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Permanent Location',
     '#default_value' => isset($form_state['multistep_values']['job_details']['permanent_location']) ? $form_state['multistep_values']['job_details']['permanent_location'] : '',
   );
+
   $form['current_role_details'] = array(
     '#type' => 'fieldset', 
     '#title' =>  'Current Role Details',
     '#collapsible' => FALSE, 
     '#collapsed' => FALSE,
   );
+
   $form['company'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Company',
     '#default_value' => isset($form_state['multistep_values']['job_details']['company']) ? $form_state['multistep_values']['job_details']['company']  : '',
   );
+
   $form['years_of_experience'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Years of Experience',
     '#default_value' => isset($form_state['multistep_values']['job_details']['years_of_experience']) ? $form_state['multistep_values']['job_details']['years_of_experience'] : '',
   );
+
   $form['current_role'] = array(
     '#type' => 'textfield', 
     '#title' =>  'Current Role',
     '#default_value' => isset($form_state['multistep_values']['job_details']['current_role']) ? $form_state['multistep_values']['job_details']['current_role'] : '',
   );
+
   $form['notice_period'] = array(
     '#type' => 'textfield', 
     '#title' =>  'notice period',
@@ -178,11 +188,13 @@ function job_details_form($form, &$form_state) {
     '#title' =>  'candidate_ex_employee_check',
     '#default_value' => 1,
   );
-  
+ 
   $form['compensation_details']['#attached']['js'][] = array(
   'type' => 'inline',
-  'data' => 'jQuery(document).ready(function () { alert("hai"); jQuery("div.messages--error > h2").remove(); var error_messege = jQuery("div.messages--error").text(); alert(error_messege.trim());
-    if(error_messege.trim() == "What code is in the image? field is required.") { alert(error_messege); jQuery("div.messages--error").hide(); }});',
+  'data' => 'jQuery(document).ready(function () { jQuery("div.messages--error > h2").remove(); 
+    var error_messege = jQuery("div.messages--error").text();
+    if(error_messege.trim() == "What code is in the image? field is required.") { 
+    jQuery("div.messages--error").hide(); }});',
   'scope' => 'footer',
   'group' => JS_THEME,
   'weight' => 5,
