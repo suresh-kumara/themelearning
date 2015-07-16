@@ -1,3 +1,19 @@
+<?php
+/**
+ * @file 
+ * list all the applicants
+ * @param $fields array of fileds name
+ * @param $rows  array  of result set
+ * @param $row['title']  title
+ * @param $row['category'] category
+ * @param $row['job_description'] job description
+ * @param $row['job_id'] job id
+ * @param $row['no_of_openings'] number of openings
+ * @param $row['last_date'] last date to apply
+ * @param $row['webform_edit'] 
+ *
+ */ 
+
 <table>
 <thead>
   <tr>
