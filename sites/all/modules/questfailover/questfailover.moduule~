@@ -1,0 +1,32 @@
+<?php
+/**
+ *
+ * @file 
+ * checks the site every min and if the site does not respond for 5 mins, then we need to get a call on our mobile.
+ */ 
+ 
+/**
+ * Implements questfailover_menu()
+ */ 
+
+function _menu() {
+  $items = array();
+  $items['run_cron_failover_check'] = array(
+    'title' => 'run_cron_failover_check',
+    'page callbacks' => 'run_cron_failover_check',
+    'access arguments' => 'access content',   
+  );
+}
+
+function run_cron_failover_check() {
+  
+}
+ 
+function failover_check() {
+  $query = "SELECT uid FROM {users} WHERE uid = 3 ";
+  $result = db_result(db_query($query));
+  if ($result)
+    return drupal_json(array('data' => 1));
+  else
+    return drupal_json(array('data' => 0));
+}

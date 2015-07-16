@@ -67,7 +67,7 @@ function jobs_views_api() {
 
 function jobs_menu() {
   $items = array();
-  $items['apply/jobid/%'] = array(
+  $items['apply/jobid/%node'] = array(
     'title' => 'Submit your Resume',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('jobs_steps_form', (2)),

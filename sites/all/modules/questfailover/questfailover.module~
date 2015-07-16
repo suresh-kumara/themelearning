@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file 
+ * checks the site every min and if the site does not respond for 5 mins, then we need to get a call on our mobile.
+ */ 
+ 
+/**
+ * Implements questfailover_menu()
+ */ 
+
+function questfailover_menu() {
+  $items = array();
+
+  $items['run_cron_failover_check'] = array(
+    'page callback' => 'run_cron_failover_check',
+    'access arguments' => array('access content'),
+  );
+ 
+ return $items;
+}
+
+function run_cron_failover_check() {
+  $message = array(
+  'to' => 'sureshkumara@azrisolutions.com',
+  'from' => 'kumara.suresh25@gmail.com',
+  'subject' =>  t(variable_get('site_name', 'Quest allinace') . ' site is down'),
+  'body' => t(variable_get('site_name', 'Quest allinace') . ' site is down'),
+  'headers' => array(),
+  );
+  if (isset($_SESSION['iterate_value'])) {
+    $iterate = $_SESSION['iterate_value'];
+  }
+  else {
+    $iterate = 0;
+  }
+  $db_status = failover_check();
+  if ($db_status) {
+    $_SESSION['iterate_value'] = 0;
+    return TRUE;
+  } 
+  else {
+    $iterate++;
+    $_SESSION['iterate_value'] = $iterate;
+    if ($iterate === 5) {
+      drupal_mail_send($message);
+    }
+    return FALSE;
+  }  
+}
+ 
+function failover_check() {
+  $query = "SELECT uid FROM {users} WHERE uid = 1 ";
+  $result = db_result(db_query($query));  
+  if ($result)
+    return TRUE;
+  else
+    return FALSE;
+}
