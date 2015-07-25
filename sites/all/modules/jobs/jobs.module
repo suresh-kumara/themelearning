@@ -1,9 +1,8 @@
 <?php
 /**
  * @file
- * jobs content type information  
- * jobs multistep form module 
- *
+ * jobs content type information
+ * jobs multistep form module
  */
 
 module_load_include('inc', 'jobs', 'includes/jobs_form_validate');
@@ -15,7 +14,6 @@ module_load_include('inc', 'jobs', 'includes/jobs_review_resend_submit');
  * Implements hook_node_info();
  *
  */
-
 function jobs_node_info() {
   return array(
     'jobs' => array(
@@ -33,7 +31,6 @@ function jobs_node_info() {
  * Implements hook_form();
  *
  */
-
 function jobs_form($node, $form_state) {
   return node_content_form($node, $form_state);
 }
@@ -43,7 +40,6 @@ function jobs_form($node, $form_state) {
  * Implements hook_views_api();
  *
  */
-
 function jobs_views_api() {
   return array(
     'api' => 3,
@@ -53,18 +49,17 @@ function jobs_views_api() {
 }
 
 /**
- * Page callback: renders a form .
+ * Page callback: renders a form.
  *
  * @param string jobid
- * 
- *   job id of a respective job .
+ *
+ *   job id of a respective job.
  *
  * @return array
  *   A render array for a jobs multistep form.
  *
  * @see node_menu()
  */
-
 function jobs_menu() {
   $items = array();
   $items['apply/jobid/%node'] = array(
@@ -95,7 +90,7 @@ function jobs_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_NORMAL_ITEM,
   );
- $items['sites/default/files/resume/%'] = array(
+  $items['sites/default/files/resume/%'] = array(
     'page callback' => '_file_download',
     'page arguments' => array(4),
     'type' => MENU_CALLBACK,
@@ -107,10 +102,10 @@ function jobs_menu() {
  * Form constructor for the multi step form.
  *
  * @param array $form
- *    form elements to dispaly .
- * 
+ *   form elements to dispaly.
+ *
  * @param array $form_state
- *    The form state array  .
+ *   The form state array.
  *
  * @see hook_form()
  * @see hook_form_validate()
@@ -118,24 +113,23 @@ function jobs_menu() {
  *
  * @ingroup forms
  */
-
 function jobs_steps_form($form, &$form_state) {
-  if (!isset($form_state['stage'])) 
+  if (!isset($form_state['stage']))
     $form_state['stage'] = 'personal_details';
   $form = array();
   $form = jobs_steps_navigation($form, $form_state);
-  switch ($form_state['stage']) { 
-    case 'personal_details': 
+  switch ($form_state['stage']) {
+    case 'personal_details':
       return  jobs_steps_personal_details($form, $form_state);
-      break;      
-    case 'job_details':  
+      break;
+    case 'job_details':
       return  job_details_form($form, $form_state);
       break;
-    case 'uploadresume':  
+    case 'uploadresume':
       return  steps_uploadresume_form($form, $form_state);
       break;
-    case 'review_resend':  
-      return steps_review_resend_form($form, $form_state); 
+    case 'review_resend':
+      return steps_review_resend_form($form, $form_state);
       break;
   }
 }
@@ -143,13 +137,12 @@ function jobs_steps_form($form, &$form_state) {
 /**
  * helps in navigation when user clicks next button
  */
-
 function job_details_move_to_next_stage($form, &$form_state) {
   switch ($form_state['stage']) {
     case 'personal_details':
       return 'job_details';
     case 'job_details':
-      return 'uploadresume';       
+      return 'uploadresume';
       break;
     case 'uploadresume':
       return 'review_resend';
@@ -160,7 +153,6 @@ function job_details_move_to_next_stage($form, &$form_state) {
 /**
  * helps in navigation when user clicks back button
  */
-
 function job_details_move_to_previous_stage($form, &$form_state) {
   switch ($form_state['stage']) {
     case 'job_details':
@@ -179,7 +171,6 @@ function job_details_move_to_previous_stage($form, &$form_state) {
 /**
  * list and highlights the current form step of multistep form
  */
-
 function jobs_steps_navigation($form, &$form_state) {
   $form_state['stage'] = isset($form_state['stage']) ? $form_state['stage']:'personal_details';
     $form_stages = array(
@@ -187,22 +178,22 @@ function jobs_steps_navigation($form, &$form_state) {
     'job_details' => 'job_details',
     'uploadresume' => 'uploadresume',
     'review_resend' => 'review_resend',
-  );  
+  );
   if (isset($form_stages[$form_state['stage']])) {
     $current_step = $form_state['stage'];
-  } 
+  }
   else {
     $current_step =  'personal_details';
   }
- 
+
   $stages = array(
     'personal_details' => array('data' => 'personal_details'),
-    'job_details' => array('data' => 'job_details'),  
+    'job_details' => array('data' => 'job_details'),
     'uploadresume' => array('data' => 'uploadresume'),
     'review_resend' => array('data' => 'review_resend'),
-  ); 
+  );
   $stages[$current_step]['class'] = array('active');
- 
+
   $stages_list = theme('item_list', array('items' => $stages));
   $form['header'] = array(
     '#type' => 'fieldset',
@@ -217,24 +208,23 @@ function jobs_steps_navigation($form, &$form_state) {
  *
  * @see hook_form_validate()
  */
-
 function jobs_steps_form_validate($form, &$form_state) {
   if ($form_state['triggering_element']['#value'] == 'Back') {
     form_clear_error();
     return;
   }
-  switch ($form_state['stage']) { 
-    case 'personal_details': 
+  switch ($form_state['stage']) {
+    case 'personal_details':
       return  jobs_steps_personal_details_validate($form, $form_state);
-      break;      
-    case 'job_details':  
+      break;
+    case 'job_details':
       return  job_details_validate($form, $form_state);
       break;
-    case 'uploadresume':  
+    case 'uploadresume':
       return  steps_uploadresume_validate($form, $form_state);
       break;
-    case 'review_resend':  
-      return steps_review_resend_validate($form, $form_state); 
+    case 'review_resend':
+      return steps_review_resend_validate($form, $form_state);
       break;
   }
 }
@@ -249,20 +239,22 @@ function jobs_steps_form_submit($form, &$form_state) {
     case 'review_resend':
       $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
       if ($form_state['triggering_element']['#value'] != 'Back') {
-       steps_review_resend_submit($form, $form_state);
-      }  
-      break; 
-    default:  
+        steps_review_resend_submit($form, $form_state);
+      }
+      break;
+    default:
       $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
       $form_state['new_stage'] = job_details_move_to_next_stage($form, $form_state);
       break;
   }
   if (isset($form_state['complete'])) {
-    drupal_goto('apply/jobid/' . $form_state['build_info']['args']['0']);
+    $node = $form_state['build_info']['args']['0'];
+    $jobid = $node->vid;
+    drupal_goto('apply/jobid/' . $jobid);
   }
   if ($form_state['triggering_element']['#value'] == 'Back') {
     $form_state['new_stage'] = job_details_move_to_previous_stage($form, $form_state);
-  } 
+  }
   if (isset($form_state['multistep_values']['form_build_id'])) {
     $form_state['values']['form_build_id'] = $form_state['multistep_values']['form_build_id'];
   }
@@ -273,39 +265,36 @@ function jobs_steps_form_submit($form, &$form_state) {
 
 /**
  * list all jobs applicant details
- * 
  */
-
 function jobs_recieved_applications() {
   $result = db_select('jobs', 'j');
   $result->join('node', 'n', 'j.job_id = n.nid');
   $result->fields('n', array('title', 'nid'))
-     ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'mobile', 'resume'));
-   $query = $result->execute()->fetchAll();
+    ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'mobile', 'resume'));
+  $query = $result->execute()->fetchAll();
   $header = array('job title', ' Name',  'Mobile', 'resume' );
   $rows = array();
- if (isset($query) && !empty($query)) {
-  foreach ($query as $key => $value) {
-     if (isset($value->resume) && !empty($value->resume))
-     $imgpath = file_load($value->resume);
-     $rows[] = array(
-       '<a href=' . base_path() . 'node/' . $value->nid . '> ' . $value->title . '<a>',
-     '<a href=' . base_path() . 'applicant_details/' . base64_encode($value->aplicant_id) . '> ' . $value->first_name . ' ' . $value->last_name . '</a>', 
-       $value->mobile, 
-       l($imgpath->filename, file_create_url($imgpath->uri)));
+  if (isset($query) && !empty($query)) {
+    foreach ($query as $key => $value) {
+      if (isset($value->resume) && !empty($value->resume))
+        $imgpath = file_load($value->resume);
+        $rows[] = array(
+          '<a href=' . base_path() . 'node/' . $value->nid . '> ' . $value->title . '<a>',
+          '<a href=' . base_path() . 'applicant_details/' . base64_encode($value->aplicant_id) . '> ' . $value->first_name . ' ' . $value->last_name . '</a>',
+        $value->mobile,
+        l($imgpath->filename, file_create_url($imgpath->uri)));
+    }
+    return theme('table', array('header' => $header, 'rows' => $rows));
   }
- return theme('table', array('header' => $header, 'rows' => $rows));
- } 
- else {
-  drupal_set_message(t('No result found'));
-return '';
- }
+  else {
+    drupal_set_message(t('No result found'));
+    return '';
+  }
 }
 
 /**
  * resume download handler
  */
-
 function _file_download($file_name) {
   header("Cache-Control: public");
   header("Content-Type: application/octet-stream");
@@ -328,30 +317,28 @@ function _file_download($file_name) {
  *
  * @ingroup themeable
  */
-
 function jobs_theme($existing, $type, $theme, $path) {
   $theme = array();
   $theme['applicant_listing'] = array(
-        'render element' => 'content',
-        'base hook' => 'jobs',
-        'template' => 'applicant_listing',
-        'path' => drupal_get_path('module', 'jobs') . '/themes/templates',
-       );
+    'render element' => 'content',
+    'base hook' => 'jobs',
+    'template' => 'applicant_listing',
+    'path' => drupal_get_path('module', 'jobs') . '/themes/templates',
+  );
   return $theme;
 }
 
 
 /**
  * fetches the indivaidual applicant node from db
- */  
-
+ */
 function applicant_details($applicant_id) {
   $result = db_select('jobs', 'j');
   $result->join('node', 'n', 'j.job_id = n.nid');
   $result->fields('n', array('title', 'nid'))
-     ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'date_of_birth', 'mobile', 'name_of_the_institution', 'qualification', 'fixed_compensation', 'variable_compensation', 'current_location', 'permanent_location', 'company', 'years_of_experience', 'notice_period', 'current_role', 'candidate_ex_employee_check', 'resume', 'cover_letter'))
-     ->condition('j.aplicant_id', base64_decode($applicant_id), '=');
- $query = $result->execute()->fetchAll();
- return theme('applicant_listing', array('result' => $query));
+    ->fields('j', array('aplicant_id', 'first_name', 'last_name', 'date_of_birth', 'mobile', 'name_of_the_institution', 'qualification', 'fixed_compensation', 'variable_compensation', 'current_location', 'permanent_location', 'company', 'years_of_experience', 'notice_period', 'current_role', 'candidate_ex_employee_check', 'resume', 'cover_letter'))
+    ->condition('j.aplicant_id', base64_decode($applicant_id), '=');
+  $query = $result->execute()->fetchAll();
+  return theme('applicant_listing', array('result' => $query));
 }
 
